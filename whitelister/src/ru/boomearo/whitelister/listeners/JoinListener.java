@@ -17,65 +17,65 @@ import ru.boomearo.whitelister.object.WhiteListedPlayer;
 import ru.boomearo.whitelister.runnable.PlayerCoolDown;
 
 public class JoinListener implements Listener {
-	
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onAsyncPlayerPreLoginEvent(AsyncPlayerPreLoginEvent e) {
-		String pName = e.getName();
-		WhiteListManager manager = WhiteLister.getContext().getWhiteListManager();
-		if (manager.isWhiteListEnabled()) {
-			WhiteListedPlayer wlp = manager.getWhiteListedPlayer(pName);
-			if (wlp == null) {
-				e.disallow(Result.KICK_WHITELIST, WhiteLister.getContext().serverPerms);
-				e.setLoginResult(Result.KICK_WHITELIST);
-				PlayerCoolDown pcd = manager.getPlayerCd(pName);
-				if (pcd == null){
-				    Bukkit.broadcastMessage(WhiteLister.getContext().onJoinMsg.replace("%PLAYER%", pName));
-				    manager.addPlayerCd(new PlayerCoolDown(pName));
-				}
-				return;
-			}
-			if (manager.isWhiteListOnlyAdminEnabled()) {
-				if (!wlp.isProtected()) {
-					e.disallow(Result.KICK_WHITELIST, WhiteLister.getContext().serverPerms);
-					e.setLoginResult(Result.KICK_WHITELIST);
-					PlayerCoolDown pcd = manager.getPlayerCd(pName);
-					if (pcd == null){
-					    Bukkit.broadcastMessage(WhiteLister.getContext().onJoinMsg.replace("%PLAYER%", pName));
-					    manager.addPlayerCd(new PlayerCoolDown(pName));
-					}
-				}
-			}
-		}
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onAsyncPlayerPreLoginEvent(AsyncPlayerPreLoginEvent e) {
+        String pName = e.getName();
+        WhiteListManager manager = WhiteLister.getContext().getWhiteListManager();
+        if (manager.isWhiteListEnabled()) {
+            WhiteListedPlayer wlp = manager.getWhiteListedPlayer(pName);
+            if (wlp == null) {
+                e.disallow(Result.KICK_WHITELIST, WhiteLister.getContext().serverPerms);
+                e.setLoginResult(Result.KICK_WHITELIST);
+                PlayerCoolDown pcd = manager.getPlayerCd(pName);
+                if (pcd == null){
+                    Bukkit.broadcastMessage(WhiteLister.getContext().onJoinMsg.replace("%PLAYER%", pName));
+                    manager.addPlayerCd(new PlayerCoolDown(pName));
+                }
+                return;
+            }
+            if (manager.isWhiteListOnlyAdminEnabled()) {
+                if (!wlp.isProtected()) {
+                    e.disallow(Result.KICK_WHITELIST, WhiteLister.getContext().serverPerms);
+                    e.setLoginResult(Result.KICK_WHITELIST);
+                    PlayerCoolDown pcd = manager.getPlayerCd(pName);
+                    if (pcd == null){
+                        Bukkit.broadcastMessage(WhiteLister.getContext().onJoinMsg.replace("%PLAYER%", pName));
+                        manager.addPlayerCd(new PlayerCoolDown(pName));
+                    }
+                }
+            }
+        }
     }
-	
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerLoginEvent(PlayerLoginEvent e) {
-		String testRealIp = e.getRealAddress().getHostAddress();
-		String realIp = WhiteLister.getContext().getWhiteListManager().getRealConnectionIp();
-		if (realIp != null) {
-			if (testRealIp.equals(realIp)) {
-				return;
-			}
-			
-			e.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, WhiteLister.getContext().serverPerms);
-			e.setResult(PlayerLoginEvent.Result.KICK_WHITELIST);
-			
-			WhiteLister.getContext().getLogger().warning("Попытка игрока " + e.getPlayer().getName() + " зайти в обход! Фейковй ип: " + e.getAddress().getHostAddress() + ". Настоящий ип адрес: " + testRealIp);
-		}
-	}
-	
-	@EventHandler(priority = EventPriority.HIGHEST)
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerLoginEvent(PlayerLoginEvent e) {
+        String testRealIp = e.getRealAddress().getHostAddress();
+        String realIp = WhiteLister.getContext().getWhiteListManager().getRealConnectionIp();
+        if (realIp != null) {
+            if (testRealIp.equals(realIp)) {
+                return;
+            }
+
+            e.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, WhiteLister.getContext().serverPerms);
+            e.setResult(PlayerLoginEvent.Result.KICK_WHITELIST);
+
+            WhiteLister.getContext().getLogger().warning("Попытка игрока " + e.getPlayer().getName() + " зайти в обход! Фейковй ип: " + e.getAddress().getHostAddress() + ". Настоящий ип адрес: " + testRealIp);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoinEvent(PlayerJoinEvent e) {
-		e.setJoinMessage((String)null);
-	}
-	
-	@EventHandler(priority = EventPriority.HIGHEST)
+        e.setJoinMessage((String)null);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerQuitEvent(PlayerQuitEvent e) {
-		e.setQuitMessage((String)null);
-	}
-	
-	@EventHandler(priority = EventPriority.HIGHEST)
+        e.setQuitMessage((String)null);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerKickEvent(PlayerKickEvent e) {
-		e.setLeaveMessage((String)null);
-	}
+        e.setLeaveMessage((String)null);
+    }
 }
