@@ -71,7 +71,8 @@ public class WhiteLister extends JavaPlugin {
         } 
         try {
             Sql.getInstance().createNewDatabaseWhiteList();
-        } catch (SQLException e) {
+        } 
+        catch (SQLException e) {
             e.printStackTrace();
         }
 

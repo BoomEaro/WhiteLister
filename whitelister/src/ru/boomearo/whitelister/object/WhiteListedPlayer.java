@@ -34,7 +34,7 @@ public class WhiteListedPlayer implements Comparable<WhiteListedPlayer> {
 
     @Override
     public int compareTo(WhiteListedPlayer arg0) {
-        int r = Boolean.compare(this.isProtected, arg0.isProtected());
+        int r = Boolean.compare(arg0.isProtected(), this.isProtected);
         if (r == 0) {
             r = Long.compare(arg0.getTimeAdded(), this.timeAdded);
             if (r == 0) {
