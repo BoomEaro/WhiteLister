@@ -1,6 +1,6 @@
 name: WhiteLister
 main: ru.boomearo.whitelister.WhiteLister
-version: 0.5.1
+version: 0.5.2
 author: BoomEaro
 api-version: 1.13
 description: Whitelist fixer
