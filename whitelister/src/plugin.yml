@@ -1,0 +1,10 @@
+name: WhiteLister
+main: ru.boomearo.whitelister.WhiteLister
+version: 0.5.1
+author: BoomEaro
+api-version: 1.13
+description: Whitelist fixer
+commands:
+  wl:
+    usage: /wl add/remove/list
+    description: add/remove player

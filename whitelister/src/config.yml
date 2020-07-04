@@ -1,0 +1,22 @@
+enabled: true
+enableOnlyProtectedJoin: false
+realIp: 127.0.0.1
+messages:
+  onjoinmsg: '&8[&b!!!&8]: &fИгрок &b%PLAYER% &fпытался зайти на сервер..'
+  addpl: '&8[&b@&8]: &fИгрок &b%PLAYER% &fбыл успешно добавлен в белый список.'
+  removepl: '&8[&b@&8]: &fИгрок &b%PLAYER% &fбыл успешно удален из белого списка.'
+  bcremovepl: '&8[&b!!!&8]: &fИгрок &b%PLAYER% &fбыл успешно удален игроком &b%PLAYERSENDER% &fиз белого списка.'
+  kickmsgwl: '&6Вы были удалены из белого списка тестового сервера, игроком &c%PLAYER%&6.'
+  notenougthargs: '&8[&b@&8]: &fНе достаточно аргументов.'
+  removeprotectconsole: Нужно удалить вручную.
+  consoleonly: '&8[&b@&8]: &fДанное действие может делать только консоль.'
+  bcremovefailedbyprotect: '&8[&b!!!&8]: &fИгрок &b%PLAYERSENDER% &fпытался удалить игрока &b%PLAYER% &fиз белого списка, в последствии чего, был наказан...'
+  bcaddpl: '&8[&b!!!&8]: &fИгрок &b%PLAYER% &fбыл успешно добавлен игроком &b%PLAYERSENDER% &fв белый список.'
+  notperms: '&8[&b!!!&8]: &fУ вас нет прав на это.'
+  removefailedbyprotect: '&8[&b@&8]: &fДанного игрока удалить невозможно. За попытку удаления вы были наказаны.'
+  addfailedbybanned: '&8[&b@&8]: &fИгрока &b%PLAYER% &fневозможно добавить в белый список.'
+  addfailedplayeris: '&8[&b@&8]: &fИгрок &b%PLAYER% &fуже добавлен в белый список.'
+  removefailedplayernotexist: '&8[&b@&8]: &fИгрок &b%PLAYER% &fне найден в белом списке.'
+  removeyourselffailed: '&8[&b@&8]: &fВы не можете себя удалить из белого списка.'
+  serverperms: '&bУ вас нет доступа на тестовый сервер.'
+  serverpermsonlyprotected: '&bНа сервере активирован режим только для супер админов.'
