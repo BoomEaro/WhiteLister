@@ -17,7 +17,7 @@ public class RemoveWhiteListThread extends BukkitRunnable {
 	}
 	
 	private void runnable() {
-		this.runTaskAsynchronously(WhiteLister.getContext());
+		this.runTaskAsynchronously(WhiteLister.getInstance());
 	}
 
 	@Override

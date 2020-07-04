@@ -29,7 +29,7 @@ public class Commands implements CommandExecutor, TabCompleter {
         if (sender instanceof Player) {
             Player pl = (Player) sender;
             if (!pl.hasPermission("whitelister.commands")) {
-                pl.sendMessage(WhiteLister.getContext().notPerms);
+                pl.sendMessage(WhiteLister.getInstance().notPerms);
                 return true;
             }
         }
@@ -57,30 +57,30 @@ public class Commands implements CommandExecutor, TabCompleter {
                 sendPlayersList(sender, 1);
             }
             else if (args[0].equalsIgnoreCase("status")) {
-                WhiteListManager manager = WhiteLister.getContext().getWhiteListManager();
+                WhiteListManager manager = WhiteLister.getInstance().getWhiteListManager();
                 sender.sendMessage("Всего игроков в белом списке: §a" + manager.getAllWhiteListedPlayer().size());
                 sender.sendMessage("Белый список: " + (manager.isWhiteListEnabled() ? "§aАктивирован" : "§cДеактивирован"));
                 sender.sendMessage("Вход только админам: " + (manager.isWhiteListOnlyAdminEnabled() ? "§aАктивирован" : "§cДеактивирован"));
             }
             else if (args[0].equalsIgnoreCase("reload")) {
                 if (sender instanceof ConsoleCommandSender) {
-                    WhiteLister.getContext().reloadConfig();
-                    WhiteLister.getContext().parse();
-                    WhiteLister.getContext().kickerNonWhitelistPlayer();
+                    WhiteLister.getInstance().reloadConfig();
+                    WhiteLister.getInstance().parse();
+                    WhiteLister.getInstance().kickerNonWhitelistPlayer();
                     sender.sendMessage("Конфигурация перезагружена.");
                 }
                 else {
-                    sender.sendMessage(WhiteLister.getContext().consoleOnly);
+                    sender.sendMessage(WhiteLister.getInstance().consoleOnly);
                 }
             }
             else if (args[0].equalsIgnoreCase("on")) {
                 if (sender instanceof ConsoleCommandSender) {
-                    WhiteListManager manager = WhiteLister.getContext().getWhiteListManager();
+                    WhiteListManager manager = WhiteLister.getInstance().getWhiteListManager();
                     if (!manager.isWhiteListEnabled()) {
                         manager.setWhiteListEnabled(true);
-                        WhiteLister.getContext().getConfig().set("enabled", true);
-                        WhiteLister.getContext().saveConfig();
-                        WhiteLister.getContext().kickerNonWhitelistPlayer();
+                        WhiteLister.getInstance().getConfig().set("enabled", true);
+                        WhiteLister.getInstance().saveConfig();
+                        WhiteLister.getInstance().kickerNonWhitelistPlayer();
                         Bukkit.broadcastMessage("§aБелый список успешно активирован консолью. Теперь никто кроме добавленных игроков зайти не сможет.");
                         sender.sendMessage("Успешно включен белый список. (enabled)");
                     }
@@ -89,17 +89,17 @@ public class Commands implements CommandExecutor, TabCompleter {
                     }
                 }
                 else {
-                    sender.sendMessage(WhiteLister.getContext().consoleOnly);
+                    sender.sendMessage(WhiteLister.getInstance().consoleOnly);
                 }
             }
             else if (args[0].equalsIgnoreCase("off")) {
                 if (sender instanceof ConsoleCommandSender) {
-                    WhiteListManager manager = WhiteLister.getContext().getWhiteListManager();
+                    WhiteListManager manager = WhiteLister.getInstance().getWhiteListManager();
                     if (manager.isWhiteListEnabled()) {
                         manager.setWhiteListEnabled(false);
-                        WhiteLister.getContext().getConfig().set("enabled", false);
-                        WhiteLister.getContext().saveConfig();
-                        WhiteLister.getContext().kickerNonWhitelistPlayer();
+                        WhiteLister.getInstance().getConfig().set("enabled", false);
+                        WhiteLister.getInstance().saveConfig();
+                        WhiteLister.getInstance().kickerNonWhitelistPlayer();
                         Bukkit.broadcastMessage("§aБелый список успешно деактивирован консолью. Теперь любой игрок может зайти на сервер.");
                         sender.sendMessage("Успешно выключен белый список. (disabled)");
                     }
@@ -108,66 +108,66 @@ public class Commands implements CommandExecutor, TabCompleter {
                     }
                 }
                 else {
-                    sender.sendMessage(WhiteLister.getContext().consoleOnly);
+                    sender.sendMessage(WhiteLister.getInstance().consoleOnly);
                 }
             }
             else if (args[0].equalsIgnoreCase("onlyadm")) {
                 if (sender instanceof ConsoleCommandSender) {
-                    WhiteListManager manager = WhiteLister.getContext().getWhiteListManager();
+                    WhiteListManager manager = WhiteLister.getInstance().getWhiteListManager();
                     if (manager.isWhiteListOnlyAdminEnabled()) {
                         manager.setWhiteListOnlyAdminEnabled(false);
-                        WhiteLister.getContext().getConfig().set("enableOnlyProtectedJoin", false);
-                        WhiteLister.getContext().saveConfig();
+                        WhiteLister.getInstance().getConfig().set("enableOnlyProtectedJoin", false);
+                        WhiteLister.getInstance().saveConfig();
                         Bukkit.broadcastMessage("§cВход только админам теперь не функционирует. Теперь любый игрок добавленный в белый список может зайти на сервер.");
                         sender.sendMessage("Успешно выключен вход только админам. (disabled)");
                     }
                     else {
                         manager.setWhiteListOnlyAdminEnabled(true);
-                        WhiteLister.getContext().getConfig().set("enableOnlyProtectedJoin", true);
-                        WhiteLister.getContext().saveConfig();
-                        WhiteLister.getContext().kickerNonSuperAdmins();
+                        WhiteLister.getInstance().getConfig().set("enableOnlyProtectedJoin", true);
+                        WhiteLister.getInstance().saveConfig();
+                        WhiteLister.getInstance().kickerNonSuperAdmins();
                         Bukkit.broadcastMessage("§aВход только админам активирован. Теперь только супер админы могут зайти на сервер.");
                         sender.sendMessage("Успешно включен вход только админам. (enabled)");
                     }
                 }
                 else {
-                    sender.sendMessage(WhiteLister.getContext().consoleOnly);
+                    sender.sendMessage(WhiteLister.getInstance().consoleOnly);
                 }
             }
 
         }
         else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("add")){
-                WhiteListManager manager = WhiteLister.getContext().getWhiteListManager();
+                WhiteListManager manager = WhiteLister.getInstance().getWhiteListManager();
                 WhiteListedPlayer wlp = manager.getWhiteListedPlayer(args[1]);
                 if (wlp == null) {
                     manager.addWhiteListedPlayer(new WhiteListedPlayer(args[1], false, System.currentTimeMillis(), sender.getName()));
                     new PutWhiteListThread(args[1], false, System.currentTimeMillis(), sender.getName());
 
-                    Bukkit.broadcastMessage(WhiteLister.getContext().bcAddPl.replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
-                    sender.sendMessage(WhiteLister.getContext().addPl.replace("%PLAYER%", args[1]));
+                    Bukkit.broadcastMessage(WhiteLister.getInstance().bcAddPl.replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
+                    sender.sendMessage(WhiteLister.getInstance().addPl.replace("%PLAYER%", args[1]));
                     return true;
                 }
                 else {
-                    sender.sendMessage(WhiteLister.getContext().addFailedPlayerIs.replace("%PLAYER%", args[1]));
+                    sender.sendMessage(WhiteLister.getInstance().addFailedPlayerIs.replace("%PLAYER%", args[1]));
                 }
                 return true;
             }
             else if (args[0].equalsIgnoreCase("remove")) {
-                WhiteListManager manager = WhiteLister.getContext().getWhiteListManager();
+                WhiteListManager manager = WhiteLister.getInstance().getWhiteListManager();
                 WhiteListedPlayer wlp = manager.getWhiteListedPlayer(args[1]);
                 if (wlp != null) {
                     if (wlp.isProtected()) {
                         if (sender instanceof Player) {
                             Player pl = (Player) sender;
-                            sender.sendMessage(WhiteLister.getContext().removeFailedByProtect);
+                            sender.sendMessage(WhiteLister.getInstance().removeFailedByProtect);
                             pl.setGameMode(GameMode.SURVIVAL);
                             pl.setHealth(0);
-                            Bukkit.broadcastMessage(WhiteLister.getContext().bcRemoveFailedByProtect.replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
+                            Bukkit.broadcastMessage(WhiteLister.getInstance().bcRemoveFailedByProtect.replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
                             return true;
                         }
                         else {
-                            sender.sendMessage(WhiteLister.getContext().removeProtectConsole);
+                            sender.sendMessage(WhiteLister.getInstance().removeProtectConsole);
                             return true;
                         }
                     }
@@ -176,27 +176,27 @@ public class Commands implements CommandExecutor, TabCompleter {
                             manager.removeWhiteListedPlayer(args[1]);
                             new RemoveWhiteListThread(args[1]);
 
-                            Bukkit.broadcastMessage(WhiteLister.getContext().bcRemovePl.replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
-                            sender.sendMessage(WhiteLister.getContext().removePl.replace("%PLAYER%", args[1]));
+                            Bukkit.broadcastMessage(WhiteLister.getInstance().bcRemovePl.replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
+                            sender.sendMessage(WhiteLister.getInstance().removePl.replace("%PLAYER%", args[1]));
                             Player pl = WhiteLister.getRightPlayer(args[1]);
                             if (pl != null) {
-                                pl.kickPlayer(WhiteLister.getContext().kickMsgWl.replace("%PLAYER%", sender.getName()));
+                                pl.kickPlayer(WhiteLister.getInstance().kickMsgWl.replace("%PLAYER%", sender.getName()));
                             }
                             return true;
                         }
                         else {
-                            sender.sendMessage(WhiteLister.getContext().removeYourSelfFailed);
+                            sender.sendMessage(WhiteLister.getInstance().removeYourSelfFailed);
                             return true;
                         }
                     }
                 }
                 else {
-                    sender.sendMessage(WhiteLister.getContext().removeFailedPlayerNotExist.replace("%PLAYER%", args[1]));
+                    sender.sendMessage(WhiteLister.getInstance().removeFailedPlayerNotExist.replace("%PLAYER%", args[1]));
                     return true;
                 }
             }
             else if (args[0].equalsIgnoreCase("info")) {
-                WhiteListManager manager = WhiteLister.getContext().getWhiteListManager();
+                WhiteListManager manager = WhiteLister.getInstance().getWhiteListManager();
                 WhiteListedPlayer wlp = manager.getWhiteListedPlayer(args[1]);
                 if (wlp != null) {
                     sender.sendMessage("Ник: " + wlp.getName());
@@ -225,10 +225,10 @@ public class Commands implements CommandExecutor, TabCompleter {
     }
     
     private static void sendPlayersList(CommandSender sender, int page) {
-        Bukkit.getScheduler().runTaskAsynchronously(WhiteLister.getContext(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(WhiteLister.getInstance(), () -> {
 
             TreeSet<WhiteListedPlayer> sort = new TreeSet<WhiteListedPlayer>();
-            sort.addAll(WhiteLister.getContext().getWhiteListManager().getAllWhiteListedPlayer());
+            sort.addAll(WhiteLister.getInstance().getWhiteListManager().getAllWhiteListedPlayer());
 
             List<String> data = new ArrayList<String>();
             for (WhiteListedPlayer wlp : sort) {
@@ -290,7 +290,7 @@ public class Commands implements CommandExecutor, TabCompleter {
             else if (arg3[0].equalsIgnoreCase("remove") || arg3[0].equalsIgnoreCase("info")) {
                 List<String> matches = new ArrayList<>();
                 String search = arg3[1].toLowerCase();
-                for (String world : WhiteLister.getContext().getWhiteListManager().getAllWhiteListedPlayerString())
+                for (String world : WhiteLister.getInstance().getWhiteListManager().getAllWhiteListedPlayerString())
                 {
                     if (world.toLowerCase().startsWith(search))
                     {

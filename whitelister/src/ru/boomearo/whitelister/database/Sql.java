@@ -30,7 +30,7 @@ public class Sql {
 
 	private Sql() throws SQLException { 
 		DriverManager.registerDriver(new JDBC()); 
-		this.connection = DriverManager.getConnection(CON_STR.replace("[path]", WhiteLister.getContext().getDataFolder() + File.separator)); 
+		this.connection = DriverManager.getConnection(CON_STR.replace("[path]", WhiteLister.getInstance().getDataFolder() + File.separator)); 
 	}
 
 	public synchronized List<SectionWhiteList> getAllDataWhiteList() { 
@@ -114,7 +114,7 @@ public class Sql {
 
 		try (Statement stmt = this.connection.createStatement()) {
 			stmt.execute(sql);
-			WhiteLister.getContext().getLogger().info("Таблица белого списка успешно загружена.");
+			WhiteLister.getInstance().getLogger().info("Таблица белого списка успешно загружена.");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

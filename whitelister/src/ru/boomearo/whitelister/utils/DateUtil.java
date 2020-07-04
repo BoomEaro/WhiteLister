@@ -62,7 +62,7 @@ public class DateUtil {
             }
         }
         if (!found) {
-            WhiteLister.getContext().getLogger().info("НЕ получилось");
+            WhiteLister.getInstance().getLogger().info("НЕ получилось");
         }
         Calendar c = new GregorianCalendar();
         if (years > 0) {

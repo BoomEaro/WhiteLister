@@ -93,7 +93,7 @@ public class WhiteLister extends JavaPlugin {
     }
 
     private static WhiteLister instance = null;
-    public static WhiteLister getContext() { 
+    public static WhiteLister getInstance() { 
         if (instance != null) return instance; return null; 
     }
 

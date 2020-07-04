@@ -13,12 +13,12 @@ public class PlayerCoolDown extends BukkitRunnable {
 	}
 	
 	public void runnable() {
-		this.runTaskLaterAsynchronously(WhiteLister.getContext(), 30*20);
+		this.runTaskLaterAsynchronously(WhiteLister.getInstance(), 30*20);
 	}
 	
 	@Override
 	public void run() {
-		WhiteLister.getContext().getWhiteListManager().removePlayerCd(this.name);
+		WhiteLister.getInstance().getWhiteListManager().removePlayerCd(this.name);
 		this.cancel();
 	}
 	

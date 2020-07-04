@@ -21,26 +21,26 @@ public class JoinListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAsyncPlayerPreLoginEvent(AsyncPlayerPreLoginEvent e) {
         String pName = e.getName();
-        WhiteListManager manager = WhiteLister.getContext().getWhiteListManager();
+        WhiteListManager manager = WhiteLister.getInstance().getWhiteListManager();
         if (manager.isWhiteListEnabled()) {
             WhiteListedPlayer wlp = manager.getWhiteListedPlayer(pName);
             if (wlp == null) {
-                e.disallow(Result.KICK_WHITELIST, WhiteLister.getContext().serverPerms);
+                e.disallow(Result.KICK_WHITELIST, WhiteLister.getInstance().serverPerms);
                 e.setLoginResult(Result.KICK_WHITELIST);
                 PlayerCoolDown pcd = manager.getPlayerCd(pName);
                 if (pcd == null){
-                    Bukkit.broadcastMessage(WhiteLister.getContext().onJoinMsg.replace("%PLAYER%", pName));
+                    Bukkit.broadcastMessage(WhiteLister.getInstance().onJoinMsg.replace("%PLAYER%", pName));
                     manager.addPlayerCd(new PlayerCoolDown(pName));
                 }
                 return;
             }
             if (manager.isWhiteListOnlyAdminEnabled()) {
                 if (!wlp.isProtected()) {
-                    e.disallow(Result.KICK_WHITELIST, WhiteLister.getContext().serverPerms);
+                    e.disallow(Result.KICK_WHITELIST, WhiteLister.getInstance().serverPerms);
                     e.setLoginResult(Result.KICK_WHITELIST);
                     PlayerCoolDown pcd = manager.getPlayerCd(pName);
                     if (pcd == null){
-                        Bukkit.broadcastMessage(WhiteLister.getContext().onJoinMsg.replace("%PLAYER%", pName));
+                        Bukkit.broadcastMessage(WhiteLister.getInstance().onJoinMsg.replace("%PLAYER%", pName));
                         manager.addPlayerCd(new PlayerCoolDown(pName));
                     }
                 }
@@ -51,16 +51,16 @@ public class JoinListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerLoginEvent(PlayerLoginEvent e) {
         String testRealIp = e.getRealAddress().getHostAddress();
-        String realIp = WhiteLister.getContext().getWhiteListManager().getRealConnectionIp();
+        String realIp = WhiteLister.getInstance().getWhiteListManager().getRealConnectionIp();
         if (realIp != null) {
             if (testRealIp.equals(realIp)) {
                 return;
             }
 
-            e.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, WhiteLister.getContext().serverPerms);
+            e.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, WhiteLister.getInstance().serverPerms);
             e.setResult(PlayerLoginEvent.Result.KICK_WHITELIST);
 
-            WhiteLister.getContext().getLogger().warning("Попытка игрока " + e.getPlayer().getName() + " зайти в обход! Фейковй ип: " + e.getAddress().getHostAddress() + ". Настоящий ип адрес: " + testRealIp);
+            WhiteLister.getInstance().getLogger().warning("Попытка игрока " + e.getPlayer().getName() + " зайти в обход! Фейковй ип: " + e.getAddress().getHostAddress() + ". Настоящий ип адрес: " + testRealIp);
         }
     }
 
