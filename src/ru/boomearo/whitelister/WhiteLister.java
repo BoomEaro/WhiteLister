@@ -21,6 +21,9 @@ public class WhiteLister extends JavaPlugin {
 
     private WhiteListManager manager = null;
 
+    private static WhiteLister instance = null;
+    
+    @Override
     public void onEnable() {
         instance = this;
 
@@ -55,6 +58,7 @@ public class WhiteLister extends JavaPlugin {
         getLogger().info("Успешно включен.");
     }
     
+    @Override
     public void onDisable() {
         try {
             getLogger().info("Отключаюсь от базы данных");
@@ -66,6 +70,7 @@ public class WhiteLister extends JavaPlugin {
         }
         getLogger().info("Успешно выключен.");	
     }
+    
     public void loadDataBase() {
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
@@ -94,9 +99,8 @@ public class WhiteLister extends JavaPlugin {
         }
     }
 
-    private static WhiteLister instance = null;
     public static WhiteLister getInstance() { 
-        if (instance != null) return instance; return null; 
+        return instance;
     }
 
 

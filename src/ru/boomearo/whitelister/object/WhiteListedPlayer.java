@@ -2,12 +2,12 @@ package ru.boomearo.whitelister.object;
 
 public class WhiteListedPlayer implements Comparable<WhiteListedPlayer> {
 
-    private String name;
+    private final String name;
     private boolean isProtected;
-    private Long timeAdded;
-    private String whoAdd;
+    private final long timeAdded;
+    private final String whoAdd;
 
-    public WhiteListedPlayer(String name, boolean isProtected, Long timeAdded, String whoAdd) {
+    public WhiteListedPlayer(String name, boolean isProtected, long timeAdded, String whoAdd) {
         this.name = name;
         this.isProtected = isProtected;
         this.timeAdded = timeAdded;
@@ -20,7 +20,7 @@ public class WhiteListedPlayer implements Comparable<WhiteListedPlayer> {
     public boolean isProtected() {
         return isProtected;
     }
-    public Long getTimeAdded() {
+    public long getTimeAdded() {
         return timeAdded;
     }
     public String whoAdd() {

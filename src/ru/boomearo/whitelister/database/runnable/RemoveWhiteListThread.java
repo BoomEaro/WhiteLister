@@ -9,7 +9,7 @@ import ru.boomearo.whitelister.database.Sql;
 
 public class RemoveWhiteListThread extends BukkitRunnable {
 	
-	private String playerName;
+	private final String playerName;
 	
 	public RemoveWhiteListThread(String playerName) {
 		this.playerName = playerName;

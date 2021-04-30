@@ -10,8 +10,8 @@ import ru.boomearo.whitelister.runnable.PlayerCoolDown;
 
 public final class WhiteListManager {
 
-	private ConcurrentMap<String, PlayerCoolDown> playersCD = new ConcurrentHashMap<String, PlayerCoolDown>();
-	private ConcurrentMap<String, WhiteListedPlayer> whiteList = new ConcurrentHashMap<String, WhiteListedPlayer>();
+	private final ConcurrentMap<String, PlayerCoolDown> playersCD = new ConcurrentHashMap<String, PlayerCoolDown>();
+	private final ConcurrentMap<String, WhiteListedPlayer> whiteList = new ConcurrentHashMap<String, WhiteListedPlayer>();
 	
 	private boolean whiteListEnabled = true;
 	private boolean whiteListOnlyProtectedEnabled = false;

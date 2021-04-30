@@ -9,10 +9,10 @@ import ru.boomearo.whitelister.database.Sql;
 
 public class PutWhiteListThread extends BukkitRunnable {
 	
-	private String name;
-	private boolean isProtected;
-	private long timeAdded;
-	private String whoAdd;
+	private final String name;
+	private final boolean isProtected;
+	private final long timeAdded;
+	private final String whoAdd;
 	
 	public PutWhiteListThread(String name, boolean isProtected, long timeAdded, String whoAdd) {
 		this.name = name;
