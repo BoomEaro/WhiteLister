@@ -35,8 +35,9 @@ public class Commands implements CommandExecutor, TabCompleter {
         }
         if (args.length == 0) {
             if (sender instanceof ConsoleCommandSender) {
-                sender.sendMessage("/wl add <ник> - Добавить в белый список");
-                sender.sendMessage("/wl remove <ник> - Удалить из белого списка");
+                sender.sendMessage("/wl add <ник> - Добавить в белый список указанного игрока");
+                sender.sendMessage("/wl remove <ник> - Удалить из белого списка указанного игрока");
+                sender.sendMessage("/wl toggleprotected <ник> - Переключить режим админа указанному игроку");
                 sender.sendMessage("/wl status - Просмотр статуса");
                 sender.sendMessage("/wl list - Просмотр всех добавленных");
                 sender.sendMessage("/wl info - Просмотр информации о добавленном игроке");
@@ -147,90 +148,108 @@ public class Commands implements CommandExecutor, TabCompleter {
                 WhiteListManager manager = WhiteLister.getInstance().getWhiteListManager();
                 WhiteListedPlayer wlp = manager.getWhiteListedPlayer(args[1]);
                 if (wlp == null) {
-                    manager.addWhiteListedPlayer(new WhiteListedPlayer(args[1], false, System.currentTimeMillis(), sender.getName()));
-
-                    Bukkit.getScheduler().runTaskAsynchronously(WhiteLister.getInstance(), () -> {
-                        Sql.getInstance().putWhiteList(args[1], false, System.currentTimeMillis(), sender.getName());
-                    });
-
-                    WhiteLister.broadcastPlayers(WhiteLister.getInstance().getConfigManager().getBcAddPl().replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
-                    sender.sendMessage(WhiteLister.getInstance().getConfigManager().getAddPl().replace("%PLAYER%", args[1]));
+                    sender.sendMessage(WhiteLister.getInstance().getConfigManager().getAddFailedPlayerIs().replace("%PLAYER%", args[1]));
                     return true;
                 }
-                else {
-                    sender.sendMessage(WhiteLister.getInstance().getConfigManager().getAddFailedPlayerIs().replace("%PLAYER%", args[1]));
-                }
-                return true;
+
+                manager.addWhiteListedPlayer(new WhiteListedPlayer(args[1], false, System.currentTimeMillis(), sender.getName()));
+
+                Bukkit.getScheduler().runTaskAsynchronously(WhiteLister.getInstance(), () -> {
+                    Sql.getInstance().putWhiteList(args[1], false, System.currentTimeMillis(), sender.getName());
+                });
+
+                WhiteLister.broadcastPlayers(WhiteLister.getInstance().getConfigManager().getBcAddPl().replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
+                sender.sendMessage(WhiteLister.getInstance().getConfigManager().getAddPl().replace("%PLAYER%", args[1]));
             }
             else if (args[0].equalsIgnoreCase("remove")) {
                 WhiteListManager manager = WhiteLister.getInstance().getWhiteListManager();
                 WhiteListedPlayer wlp = manager.getWhiteListedPlayer(args[1]);
-                if (wlp != null) {
-                    if (wlp.isProtected()) {
-                        if (sender instanceof Player) {
-                            Player pl = (Player) sender;
-                            sender.sendMessage(WhiteLister.getInstance().getConfigManager().getRemoveFailedByProtect());
-                            pl.setGameMode(GameMode.SURVIVAL);
-                            pl.setHealth(0);
-                            WhiteLister.broadcastPlayers(WhiteLister.getInstance().getConfigManager().getBcRemoveFailedByProtect().replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
-                            return true;
-                        }
-                        else {
-                            sender.sendMessage(WhiteLister.getInstance().getConfigManager().getRemoveProtectConsole());
-                            return true;
-                        }
-                    }
-                    else {
-                        if (!args[1].equals(sender.getName())) {
-                            manager.removeWhiteListedPlayer(args[1]);
-
-                            Bukkit.getScheduler().runTaskAsynchronously(WhiteLister.getInstance(), () -> {
-                                Sql.getInstance().removeWhiteList(args[1]);
-                            });
-
-                            WhiteLister.broadcastPlayers(WhiteLister.getInstance().getConfigManager().getBcRemovePl().replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
-                            sender.sendMessage(WhiteLister.getInstance().getConfigManager().getRemovePl().replace("%PLAYER%", args[1]));
-                            Player pl = WhiteLister.getRightPlayer(args[1]);
-                            if (pl != null) {
-                                pl.kickPlayer(WhiteLister.getInstance().getConfigManager().getKickMsgWl().replace("%PLAYER%", sender.getName()));
-                            }
-                            return true;
-                        }
-                        else {
-                            sender.sendMessage(WhiteLister.getInstance().getConfigManager().getRemoveYourSelfFailed());
-                            return true;
-                        }
-                    }
-                }
-                else {
+                if (wlp == null) {
                     sender.sendMessage(WhiteLister.getInstance().getConfigManager().getRemoveFailedPlayerNotExist().replace("%PLAYER%", args[1]));
                     return true;
                 }
+
+                if (wlp.isProtected()) {
+                    if (sender instanceof Player) {
+                        Player pl = (Player) sender;
+                        sender.sendMessage(WhiteLister.getInstance().getConfigManager().getRemoveFailedByProtect());
+                        pl.setGameMode(GameMode.SURVIVAL);
+                        pl.setHealth(0);
+                        WhiteLister.broadcastPlayers(WhiteLister.getInstance().getConfigManager().getBcRemoveFailedByProtect().replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
+                    }
+                    else {
+                        sender.sendMessage(WhiteLister.getInstance().getConfigManager().getRemoveProtectConsole());
+                    }
+                }
+                else {
+                    if (!args[1].equals(sender.getName())) {
+                        manager.removeWhiteListedPlayer(args[1]);
+
+                        Bukkit.getScheduler().runTaskAsynchronously(WhiteLister.getInstance(), () -> {
+                            Sql.getInstance().removeWhiteList(args[1]);
+                        });
+
+                        WhiteLister.broadcastPlayers(WhiteLister.getInstance().getConfigManager().getBcRemovePl().replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
+                        sender.sendMessage(WhiteLister.getInstance().getConfigManager().getRemovePl().replace("%PLAYER%", args[1]));
+                        Player pl = WhiteLister.getRightPlayer(args[1]);
+                        if (pl != null) {
+                            pl.kickPlayer(WhiteLister.getInstance().getConfigManager().getKickMsgWl().replace("%PLAYER%", sender.getName()));
+                        }
+                    }
+                    else {
+                        sender.sendMessage(WhiteLister.getInstance().getConfigManager().getRemoveYourSelfFailed());
+                    }
+                }
+            }
+            else if (args[0].equalsIgnoreCase("toggleprotected")) {
+                if (!(sender instanceof ConsoleCommandSender)) {
+                    sender.sendMessage(WhiteLister.getInstance().getConfigManager().getRemoveProtectConsole());
+                    return true;
+                }
+                WhiteListManager manager = WhiteLister.getInstance().getWhiteListManager();
+                WhiteListedPlayer wlp = manager.getWhiteListedPlayer(args[1]);
+
+                if (wlp == null) {
+                    sender.sendMessage("Игрок не найден в белом списке.");
+                    return true;
+                }
+
+                wlp.setProtected(!wlp.isProtected());
+
+                Bukkit.getScheduler().runTaskAsynchronously(WhiteLister.getInstance(), () -> {
+                    Sql.getInstance().updateWhiteList(wlp.getName(), wlp.isProtected(), wlp.getTimeAdded(), wlp.getWhoAdd());
+                });
+
+                sender.sendMessage("Игроку " + args[1] + " успешно " + (wlp.isProtected() ? "Включена" : "Выключена") + " админ защита!");
             }
             else if (args[0].equalsIgnoreCase("info")) {
                 WhiteListManager manager = WhiteLister.getInstance().getWhiteListManager();
                 WhiteListedPlayer wlp = manager.getWhiteListedPlayer(args[1]);
-                if (wlp != null) {
-                    sender.sendMessage("Ник: " + wlp.getName());
-                    sender.sendMessage("Защита: " + wlp.isProtected());
-                    Date date = new Date(wlp.getTimeAdded());
-                    SimpleDateFormat jdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-                    String java_date = jdf.format(date);
-                    sender.sendMessage("Был добавлен: " + java_date + " (" + DateUtil.formatedTime(System.currentTimeMillis() - wlp.getTimeAdded(), true) + "назад.)");
-                    sender.sendMessage("Кем добавлен: " + wlp.whoAdd());
+                if (wlp == null) {
+                    sender.sendMessage("Игрок не найден в белом списке.");
+                    return true;
                 }
-                else {
-                    sender.sendMessage("Игрок не найден.");
-                }
+
+                sender.sendMessage("Ник: " + wlp.getName());
+                sender.sendMessage("Защита: " + wlp.isProtected());
+                Date date = new Date(wlp.getTimeAdded());
+                SimpleDateFormat jdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                String java_date = jdf.format(date);
+                sender.sendMessage("Дата добавления: " + java_date + " (" + DateUtil.formatedTime(System.currentTimeMillis() - wlp.getTimeAdded(), true) + "назад.)");
+                sender.sendMessage("Кем добавлен: " + wlp.getWhoAdd());
             }
             else if (args[0].equalsIgnoreCase("list")) {
+                Integer page = null;
                 try {
-                    int page = Integer.parseInt(args[1]);
-                    sendPlayersList(sender, page);
+                    page = Integer.parseInt(args[1]);
                 }
-                catch (Exception e) {
+                catch (Exception e) {}
+                if (page == null) {
                     sender.sendMessage("Аргумент '" + args[1] + "' должен быть цифрой.");
+                    return true;
                 }
+
+                sendPlayersList(sender, page);
             }
         }
         return true;
@@ -255,23 +274,21 @@ public class Commands implements CommandExecutor, TabCompleter {
     private static final List<String> empty = new ArrayList<>();
 
     @Override
-    public List<String> onTabComplete(CommandSender arg0, Command arg1, String arg2, String[] arg3) {
-        if (arg0 instanceof Player) {
-            Player pl = (Player) arg0;
+    public List<String> onTabComplete(CommandSender sender, Command cmd, String cmdString, String[] args) {
+        if (sender instanceof Player) {
+            Player pl = (Player) sender;
             if (!(pl.hasPermission("whitelister.commands"))) {
                 return empty;
             }
         }
-        if (arg3.length == 1) {
-            List<String> ss;
-            if (arg0 instanceof ConsoleCommandSender) {
-                ss = new ArrayList<String>(Arrays.asList("add", "remove", "list", "reload", "on", "off", "onlyadm", "info"));
+        if (args.length == 1) {
+            List<String> ss = new ArrayList<>(Arrays.asList("add", "remove", "list", "info"));
+            if (sender instanceof ConsoleCommandSender) {
+                ss.addAll(Arrays.asList("reload", "on", "off", "onlyadm", "toggleprotected"));
             }
-            else {
-                ss = new ArrayList<String>(Arrays.asList("add", "remove", "list", "info"));
-            }
+
             List<String> matches = new ArrayList<>();
-            String search = arg3[0].toLowerCase();
+            String search = args[0].toLowerCase();
             for (String s : ss) {
                 if (s.toLowerCase().startsWith(search)) {
                     matches.add(s);
@@ -279,14 +296,14 @@ public class Commands implements CommandExecutor, TabCompleter {
             }
             return matches;
         }
-        if (arg3.length == 2) {
-            if (arg3[0].equalsIgnoreCase("add")) {
+        if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("add")) {
                 List<String> ss = new ArrayList<String>();
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     ss.add(p.getName());
                 }
                 List<String> matches = new ArrayList<>();
-                String search = arg3[1].toLowerCase();
+                String search = args[1].toLowerCase();
                 for (String world : ss) {
                     if (world.toLowerCase().startsWith(search)) {
                         matches.add(world);
@@ -295,9 +312,9 @@ public class Commands implements CommandExecutor, TabCompleter {
                 return matches;
 
             }
-            else if (arg3[0].equalsIgnoreCase("remove") || arg3[0].equalsIgnoreCase("info")) {
+            else if (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("info") || args[0].equalsIgnoreCase("toggleprotected")) {
                 List<String> matches = new ArrayList<>();
-                String search = arg3[1].toLowerCase();
+                String search = args[1].toLowerCase();
                 for (String world : WhiteLister.getInstance().getWhiteListManager().getAllWhiteListedPlayerString()) {
                     if (world.toLowerCase().startsWith(search)) {
                         matches.add(world);

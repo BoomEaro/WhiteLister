@@ -29,7 +29,7 @@ public class JoinListener implements Listener {
                 e.disallow(Result.KICK_WHITELIST, config.getServerPerms());
                 e.setLoginResult(Result.KICK_WHITELIST);
 
-                if (manager.hasSendedJoinMessage(pName, 60)) {
+                if (manager.hasSentJoinMessage(pName, 60)) {
                     manager.addJoinMessageCd(pName, System.currentTimeMillis());
 
                     WhiteLister.broadcastPlayers(config.getOnJoinMsg().replace("%PLAYER%", pName));
@@ -42,7 +42,7 @@ public class JoinListener implements Listener {
                     e.disallow(Result.KICK_WHITELIST, config.getServerPermsOnlyProtected());
                     e.setLoginResult(Result.KICK_WHITELIST);
 
-                    if (manager.hasSendedJoinMessage(pName, 60)) {
+                    if (manager.hasSentJoinMessage(pName, 60)) {
                         manager.addJoinMessageCd(pName, System.currentTimeMillis());
 
                         WhiteLister.broadcastPlayers(config.getOnJoinMsg().replace("%PLAYER%", pName));

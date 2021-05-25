@@ -26,14 +26,13 @@ public class WhiteListedPlayer implements Comparable<WhiteListedPlayer> {
         return timeAdded;
     }
 
-    public String whoAdd() {
+    public String getWhoAdd() {
         return whoAdd;
     }
 
     public void setProtected(boolean b) {
         this.isProtected = b;
     }
-
 
     @Override
     public int compareTo(WhiteListedPlayer arg0) {

@@ -19,7 +19,7 @@ public final class WhiteListManager {
 
     public static final String prefix = "§8[§b!!!§8]:§f ";
 
-    public boolean hasSendedJoinMessage(String name, int time) {
+    public boolean hasSentJoinMessage(String name, int time) {
         Long plTime = getJoinMessageCd(name);
         if (plTime == null) {
             return true;
