@@ -1,18 +1,15 @@
 package ru.boomearo.whitelister;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import ru.boomearo.whitelister.commands.Commands;
 import ru.boomearo.whitelister.database.Sql;
-import ru.boomearo.whitelister.database.sections.SectionWhiteList;
 import ru.boomearo.whitelister.listeners.JoinListener;
 import ru.boomearo.whitelister.managers.ConfigManager;
 import ru.boomearo.whitelister.managers.WhiteListManager;
-import ru.boomearo.whitelister.object.WhiteListedPlayer;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -41,24 +38,16 @@ public class WhiteLister extends JavaPlugin {
             this.config.loadConfig();
         }
 
+        loadDataBase();
+
         if (this.manager == null) {
             this.manager = new WhiteListManager();
-        }
 
-        loadDataBase();
-        loadWhiteList();
+            this.manager.loadWhiteList();
+            this.manager.checkWhiteListedPlayers();
+        }
 
         getServer().getPluginManager().registerEvents(new JoinListener(), this);
-
-        if (this.config.isEnabled()) {
-            if (this.config.isEnabledProtection()) {
-                kickerNonWhitelistPlayer();
-                kickerNonSuperAdmins();
-            }
-            else {
-                kickerNonWhitelistPlayer();
-            }
-        }
 
         getCommand("whitelister").setExecutor(new Commands());
 
@@ -86,12 +75,6 @@ public class WhiteLister extends JavaPlugin {
         return this.manager;
     }
 
-    public static void broadcastPlayers(String text) {
-        for (Player pl : Bukkit.getOnlinePlayers()) {
-            pl.sendMessage(text);
-        }
-    }
-
     private void loadDataBase() {
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
@@ -102,14 +85,8 @@ public class WhiteLister extends JavaPlugin {
 
             Sql.getInstance().createNewDatabaseWhiteList();
         }
-        catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-    }
-
-    private void loadWhiteList() {
-        for (SectionWhiteList spb : Sql.getInstance().getAllDataWhiteList()) {
-            this.manager.addWhiteListedPlayer(new WhiteListedPlayer(spb.name, spb.isProtected, spb.timeAdded, spb.whoAdd));
+        catch (SQLException throwable) {
+            throwable.printStackTrace();
         }
     }
 
@@ -117,37 +94,9 @@ public class WhiteLister extends JavaPlugin {
         return instance;
     }
 
-    public void kickerNonWhitelistPlayer() {
-        boolean iskickmsg = false;
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (this.manager.getWhiteListedPlayer(player.getName()) == null) {
-                player.kickPlayer(ChatColor.RED + "#Вылет: Вы были кикнуты с тестового сервера, потому что не были в белом списке.");
-                if (!iskickmsg) {
-                    iskickmsg = true;
-                }
-            }
-        }
-        if (iskickmsg) {
-
-            broadcastPlayers(ChatColor.RED + "Все кто не был в белом списке, были автоматически кикнуты.");
-        }
-    }
-
-    public void kickerNonSuperAdmins() {
-        boolean iskickmsg = false;
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            WhiteListedPlayer wlp = this.manager.getWhiteListedPlayer(player.getName());
-            if (wlp != null) {
-                if (!wlp.isProtected()) {
-                    player.kickPlayer(ChatColor.RED + "#Вылет: Вы были кикнуты с тестового сервера, потому что был активирован режим 'только супер админы'.");
-                    if (!iskickmsg) {
-                        iskickmsg = true;
-                    }
-                }
-            }
-        }
-        if (iskickmsg) {
-            broadcastPlayers(ChatColor.RED + "Все кто не был в списке супер админов, были автоматически кикнуты.");
+    public static void broadcastPlayers(String text) {
+        for (Player pl : Bukkit.getOnlinePlayers()) {
+            pl.sendMessage(text);
         }
     }
 

@@ -66,7 +66,7 @@ public class Commands implements CommandExecutor, TabCompleter {
             else if (args[0].equalsIgnoreCase("reload")) {
                 if (sender instanceof ConsoleCommandSender) {
                     WhiteLister.getInstance().getConfigManager().loadConfig();
-                    WhiteLister.getInstance().kickerNonWhitelistPlayer();
+                    WhiteLister.getInstance().getWhiteListManager().checkWhiteListedPlayers();
                     sender.sendMessage("Конфигурация перезагружена.");
                 }
                 else {
@@ -81,7 +81,8 @@ public class Commands implements CommandExecutor, TabCompleter {
                         config.setEnabled(true);
                         config.saveConfig();
 
-                        WhiteLister.getInstance().kickerNonWhitelistPlayer();
+                        manager.checkWhiteListedPlayers();
+
                         WhiteLister.broadcastPlayers("§aБелый список успешно активирован консолью. Теперь никто кроме добавленных игроков зайти не сможет.");
                         sender.sendMessage("Успешно включен белый список. (enabled)");
                     }
@@ -101,7 +102,8 @@ public class Commands implements CommandExecutor, TabCompleter {
                         config.setEnabled(false);
                         config.saveConfig();
 
-                        WhiteLister.getInstance().kickerNonWhitelistPlayer();
+                        manager.checkWhiteListedPlayers();
+
                         WhiteLister.broadcastPlayers("§aБелый список успешно деактивирован консолью. Теперь любой игрок может зайти на сервер.");
                         sender.sendMessage("Успешно выключен белый список. (disabled)");
                     }
@@ -128,7 +130,8 @@ public class Commands implements CommandExecutor, TabCompleter {
                         config.setEnabledProtection(true);
                         config.saveConfig();
 
-                        WhiteLister.getInstance().kickerNonSuperAdmins();
+                        manager.checkWhiteListedPlayers();
+
                         WhiteLister.broadcastPlayers("§aВход только админам активирован. Теперь только супер админы могут зайти на сервер.");
                         sender.sendMessage("Успешно включен вход только админам. (enabled)");
                     }

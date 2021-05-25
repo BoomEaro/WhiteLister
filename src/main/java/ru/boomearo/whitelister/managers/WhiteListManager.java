@@ -5,6 +5,11 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import ru.boomearo.whitelister.WhiteLister;
+import ru.boomearo.whitelister.database.Sql;
+import ru.boomearo.whitelister.database.sections.SectionWhiteList;
 import ru.boomearo.whitelister.object.WhiteListedPlayer;
 
 public final class WhiteListManager {
@@ -28,6 +33,12 @@ public final class WhiteListManager {
         return false;
     }
 
+    public void loadWhiteList() {
+        for (SectionWhiteList spb : Sql.getInstance().getAllDataWhiteList()) {
+            addWhiteListedPlayer(new WhiteListedPlayer(spb.name, spb.isProtected, spb.timeAdded, spb.whoAdd));
+        }
+    }
+
     public Long getJoinMessageCd(String name) {
         return this.joinMessageCd.get(name);
     }
@@ -38,6 +49,52 @@ public final class WhiteListManager {
 
     public void addJoinMessageCd(String name, long time) {
         this.joinMessageCd.put(name, time);
+    }
+
+    public void checkWhiteListedPlayers() {
+        ConfigManager config = WhiteLister.getInstance().getConfigManager();
+        if (config.isEnabled()) {
+            if (config.isEnabledProtection()) {
+                kickNonWhitelistPlayer();
+                kickNonSuperAdmins();
+            }
+            else {
+                kickNonWhitelistPlayer();
+            }
+        }
+    }
+
+    private void kickNonWhitelistPlayer() {
+        boolean isKickMsg = false;
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (getWhiteListedPlayer(player.getName()) == null) {
+                player.kickPlayer("§c#Вылет: Вы были кикнуты с тестового сервера, потому что не были в белом списке.");
+                if (!isKickMsg) {
+                    isKickMsg = true;
+                }
+            }
+        }
+        if (isKickMsg) {
+            WhiteLister.broadcastPlayers( "§cВсе кто не был в белом списке, были автоматически кикнуты.");
+        }
+    }
+
+    private void kickNonSuperAdmins() {
+        boolean isKickMsg = false;
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            WhiteListedPlayer wlp = getWhiteListedPlayer(player.getName());
+            if (wlp != null) {
+                if (!wlp.isProtected()) {
+                    player.kickPlayer(  "§c#Вылет: Вы были кикнуты с тестового сервера, потому что был активирован режим 'только админы'.");
+                    if (!isKickMsg) {
+                        isKickMsg = true;
+                    }
+                }
+            }
+        }
+        if (isKickMsg) {
+            WhiteLister.broadcastPlayers("§cВсе кто не был в списке админов, были автоматически кикнуты.");
+        }
     }
 
     public WhiteListedPlayer getWhiteListedPlayer(String name) {
