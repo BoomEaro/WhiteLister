@@ -137,7 +137,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 
         }
         else if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("add")){
+            if (args[0].equalsIgnoreCase("add")) {
                 WhiteListManager manager = WhiteLister.getInstance().getWhiteListManager();
                 WhiteListedPlayer wlp = manager.getWhiteListedPlayer(args[1]);
                 if (wlp == null) {
@@ -201,10 +201,10 @@ public class Commands implements CommandExecutor, TabCompleter {
                 if (wlp != null) {
                     sender.sendMessage("Ник: " + wlp.getName());
                     sender.sendMessage("Защита: " + wlp.isProtected());
-                    Date date = new Date(wlp.getTimeAdded()); 
+                    Date date = new Date(wlp.getTimeAdded());
                     SimpleDateFormat jdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                     String java_date = jdf.format(date);
-                    sender.sendMessage("Был добавлен: " +  java_date + " (" + DateUtil.formatedTime(System.currentTimeMillis() - wlp.getTimeAdded(), true) + "назад.)");
+                    sender.sendMessage("Был добавлен: " + java_date + " (" + DateUtil.formatedTime(System.currentTimeMillis() - wlp.getTimeAdded(), true) + "назад.)");
                     sender.sendMessage("Кем добавлен: " + wlp.whoAdd());
                 }
                 else {
@@ -220,10 +220,10 @@ public class Commands implements CommandExecutor, TabCompleter {
                     sender.sendMessage("Аргумент '" + args[1] + "' должен быть цифрой.");
                 }
             }
-        } 
+        }
         return true;
     }
-    
+
     private static void sendPlayersList(CommandSender sender, int page) {
         Bukkit.getScheduler().runTaskAsynchronously(WhiteLister.getInstance(), () -> {
 
@@ -233,7 +233,7 @@ public class Commands implements CommandExecutor, TabCompleter {
             List<String> data = new ArrayList<String>();
             for (WhiteListedPlayer wlp : sort) {
                 boolean hasOnline = (WhiteLister.getRightPlayer(wlp.getName()) != null);
-                
+
                 data.add((wlp.isProtected() ? "§c" : "§f") + wlp.getName() + (hasOnline ? " §a(онлайн)" : ""));
             }
             WhiteLister.sendPageInfo(sender, data, page, 12);
@@ -260,10 +260,8 @@ public class Commands implements CommandExecutor, TabCompleter {
             }
             List<String> matches = new ArrayList<>();
             String search = arg3[0].toLowerCase();
-            for (String s : ss)
-            {
-                if (s.toLowerCase().startsWith(search))
-                {
+            for (String s : ss) {
+                if (s.toLowerCase().startsWith(search)) {
                     matches.add(s);
                 }
             }
@@ -277,10 +275,8 @@ public class Commands implements CommandExecutor, TabCompleter {
                 }
                 List<String> matches = new ArrayList<>();
                 String search = arg3[1].toLowerCase();
-                for (String world : ss)
-                {
-                    if (world.toLowerCase().startsWith(search))
-                    {
+                for (String world : ss) {
+                    if (world.toLowerCase().startsWith(search)) {
                         matches.add(world);
                     }
                 }
@@ -290,10 +286,8 @@ public class Commands implements CommandExecutor, TabCompleter {
             else if (arg3[0].equalsIgnoreCase("remove") || arg3[0].equalsIgnoreCase("info")) {
                 List<String> matches = new ArrayList<>();
                 String search = arg3[1].toLowerCase();
-                for (String world : WhiteLister.getInstance().getWhiteListManager().getAllWhiteListedPlayerString())
-                {
-                    if (world.toLowerCase().startsWith(search))
-                    {
+                for (String world : WhiteLister.getInstance().getWhiteListManager().getAllWhiteListedPlayerString()) {
+                    if (world.toLowerCase().startsWith(search)) {
                         matches.add(world);
                     }
                 }

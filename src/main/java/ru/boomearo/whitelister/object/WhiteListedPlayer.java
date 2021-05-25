@@ -17,12 +17,15 @@ public class WhiteListedPlayer implements Comparable<WhiteListedPlayer> {
     public String getName() {
         return name;
     }
+
     public boolean isProtected() {
         return isProtected;
     }
+
     public long getTimeAdded() {
         return timeAdded;
     }
+
     public String whoAdd() {
         return whoAdd;
     }

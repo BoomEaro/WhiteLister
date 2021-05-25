@@ -22,13 +22,13 @@ public class WhiteLister extends JavaPlugin {
     private WhiteListManager manager = null;
 
     private static WhiteLister instance = null;
-    
+
     @Override
     public void onEnable() {
         instance = this;
 
         File configFile = new File(getDataFolder() + File.separator + "config.yml");
-        if(!configFile.exists()) {
+        if (!configFile.exists()) {
             getLogger().info("Конфиг не найден, создаю новый...");
             saveDefaultConfig();
         }
@@ -57,27 +57,27 @@ public class WhiteLister extends JavaPlugin {
 
         getLogger().info("Успешно включен.");
     }
-    
+
     @Override
     public void onDisable() {
         try {
             getLogger().info("Отключаюсь от базы данных");
             Sql.getInstance().Disconnect();
             getLogger().info("Успешно отключился от базы данных");
-        } 
+        }
         catch (SQLException e1) {
             e1.printStackTrace();
         }
-        getLogger().info("Успешно выключен.");	
+        getLogger().info("Успешно выключен.");
     }
-    
+
     public void loadDataBase() {
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
-        } 
+        }
         try {
             Sql.getInstance().createNewDatabaseWhiteList();
-        } 
+        }
         catch (SQLException e) {
             e.printStackTrace();
         }
@@ -93,20 +93,20 @@ public class WhiteLister extends JavaPlugin {
             for (SectionWhiteList spb : Sql.getInstance().getAllDataWhiteList()) {
                 this.manager.addWhiteListedPlayer(new WhiteListedPlayer(spb.name, spb.isProtected, spb.timeAdded, spb.whoAdd));
             }
-        } 
+        }
         catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public static WhiteLister getInstance() { 
+    public static WhiteLister getInstance() {
         return instance;
     }
 
 
-    public String onJoinMsg, addPl, removePl, bcRemovePl, kickMsgWl, notEnougthArgs, serverPerms, 
-    serverPermsOnlyProtected, removeProtectConsole, consoleOnly, bcRemoveFailedByProtect, bcAddPl, 
-    notPerms, removeFailedByProtect, addFailedByBanned, addFailedPlayerIs, removeFailedPlayerNotExist, removeYourSelfFailed;
+    public String onJoinMsg, addPl, removePl, bcRemovePl, kickMsgWl, notEnougthArgs, serverPerms,
+            serverPermsOnlyProtected, removeProtectConsole, consoleOnly, bcRemoveFailedByProtect, bcAddPl,
+            notPerms, removeFailedByProtect, addFailedByBanned, addFailedPlayerIs, removeFailedPlayerNotExist, removeYourSelfFailed;
 
     public void parse() {
         this.manager.setWhiteListEnabled(this.getConfig().getBoolean("enabled"));
@@ -135,14 +135,14 @@ public class WhiteLister extends JavaPlugin {
 
     public void kickerNonWhitelistPlayer() {
         boolean iskickmsg = false;
-        for (Player player: Bukkit.getOnlinePlayers()) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
             if (this.manager.getWhiteListedPlayer(player.getName()) == null) {
                 player.kickPlayer(ChatColor.RED + "#Вылет: Вы были кикнуты с тестового сервера, потому что не были в белом списке.");
                 if (!iskickmsg) {
                     iskickmsg = true;
                 }
             }
-        }	
+        }
         if (iskickmsg) {
             Bukkit.broadcastMessage(ChatColor.RED + "Все кто не был в белом списке, были автоматически кикнуты.");
         }
@@ -150,7 +150,7 @@ public class WhiteLister extends JavaPlugin {
 
     public void kickerNonSuperAdmins() {
         boolean iskickmsg = false;
-        for (Player player: Bukkit.getOnlinePlayers()) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
             WhiteListedPlayer wlp = this.manager.getWhiteListedPlayer(player.getName());
             if (wlp != null) {
                 if (!wlp.isProtected()) {
@@ -160,7 +160,7 @@ public class WhiteLister extends JavaPlugin {
                     }
                 }
             }
-        }	
+        }
         if (iskickmsg) {
             Bukkit.broadcastMessage(ChatColor.RED + "Все кто не был в списке супер админов, были автоматически кикнуты.");
         }
@@ -180,8 +180,8 @@ public class WhiteLister extends JavaPlugin {
             cs.sendMessage(WhiteListManager.prefix + "Указанная страница должна быть больше нуля.");
             return;
         }
-        int offSet = (page-1)*pageLimit;
-        if (offSet >= info.size()){
+        int offSet = (page - 1) * pageLimit;
+        if (offSet >= info.size()) {
             cs.sendMessage(WhiteListManager.prefix + "Указанная страница не найдена.");
             return;
         }
@@ -192,11 +192,11 @@ public class WhiteLister extends JavaPlugin {
         cs.sendMessage(iii);
         cs.sendMessage(WhiteListManager.prefix + "Страница: §b" + page + "§f/§b" + maxPage);
         for (int i = 0; i < pageLimit; i++) {
-            int newO = offSet+i;
+            int newO = offSet + i;
             if (newO >= info.size()) {
                 break;
             }
-            cs.sendMessage(WhiteListManager.prefix + "§b" + (newO+1) + ". §f" + info.get(newO));
+            cs.sendMessage(WhiteListManager.prefix + "§b" + (newO + 1) + ". §f" + info.get(newO));
         }
         cs.sendMessage(iii);
     }

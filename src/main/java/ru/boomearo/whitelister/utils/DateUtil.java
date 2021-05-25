@@ -96,85 +96,87 @@ public class DateUtil {
         }
         return c.getTimeInMillis();
     }
+
     //Мой метод :3
     //Формирование текста для бана.
-	public static String formatedTime(long time, Boolean d) {
-		long counterdd;
-		if (d == true) {
-			counterdd = time / 1000;
-		}
-		else {
-			counterdd = time;
-		}
-	    long timeSecond = counterdd;
-		int year = 0;
-		int month = 0;
-		int week = 0;
-		int day = 0;
-		int hour = 0;
-	    int min = 0;
-	    int sec = 0;
-	    
-	    year = (int) ( timeSecond / 31536000 );
-	    timeSecond = timeSecond-year*31536000;
-	    month = (int) ( timeSecond / 2678400 );
-	    timeSecond= timeSecond-month*2678400;
-	    week = (int) ( timeSecond / 604800 ); 
-	    timeSecond = timeSecond-week*604800;
-	    day = (int) ( timeSecond / 86400 ); 
-	    timeSecond = timeSecond-day*86400;
-	    hour = (int) ( timeSecond / 3600 );
-	    timeSecond = timeSecond-hour*3600;
-	    min = (int) ( timeSecond / 60 );
-	    timeSecond = timeSecond-min*60;
-	    sec = (int) timeSecond;
-	    
-	    String fyear = year + " " + convertSu(year, "год", "года", "лет") + " ";
-	    String fmonth = month + " " + convertSu(month, "месяц", "месяца", "месяцев") + " ";
-	    String fweek = week + " " + convertSu(week, "неделю", "недели", "недель") + " ";
-	    String fday = day + " " + convertSu(day, "день", "дня", "дней") + " ";
-	    String fhour = hour + " " + convertSu(hour, "час", "часа", "часов") + " ";
-	    String fmin = min + " " + convertSu(min, "минуту", "минуты", "минут") + " ";
-	    String fsec = sec + " " + convertSu(sec, "секунду", "секунды", "секунд") + " ";
-	    if (year <= 0) {
-	    	fyear = "";
-	    }
-	    if (month <= 0) {
-	    	fmonth = "";
-	    }
-	    if (week <= 0) {
-	    	fweek = "";
-	    }
-	    if (day <= 0) {
-	    	fday = "";
-	    }
-	    if (hour <= 0) {
-	    	fhour = "";
-	    }
-	    if (min <= 0) {
-	    	fmin = "";
-	    }
-	    if (sec <= 0) {
-	    	fsec = "";
-	    }
-	    if (sec <= 0 && min <= 0 && hour <= 0 && day <= 0 && week <= 0 && month <= 0 && year <= 0) {
-	    	fsec = "сейчас.";
-	    }
-	    
-	    String done = fyear + fmonth + fweek + fday + fhour + fmin + fsec;
-	    
-		return done;
-		
-	}
-	//Не мой метод. С хабра где то нашел.
-	//Нужен для склонений.
-	public static String convertSu(int n, String s1, String s2, String s3) {
-		n = Math.abs(n) % 100;
-		int n1 = n % 10;
-		if (n > 10 && n < 20) return s3;
-		if (n1 > 1 && n1 < 5) return s2;
-		if (n1 == 1) return s1;
-		return s3;
-	}
+    public static String formatedTime(long time, Boolean d) {
+        long counterdd;
+        if (d == true) {
+            counterdd = time / 1000;
+        }
+        else {
+            counterdd = time;
+        }
+        long timeSecond = counterdd;
+        int year = 0;
+        int month = 0;
+        int week = 0;
+        int day = 0;
+        int hour = 0;
+        int min = 0;
+        int sec = 0;
+
+        year = (int) (timeSecond / 31536000);
+        timeSecond = timeSecond - year * 31536000;
+        month = (int) (timeSecond / 2678400);
+        timeSecond = timeSecond - month * 2678400;
+        week = (int) (timeSecond / 604800);
+        timeSecond = timeSecond - week * 604800;
+        day = (int) (timeSecond / 86400);
+        timeSecond = timeSecond - day * 86400;
+        hour = (int) (timeSecond / 3600);
+        timeSecond = timeSecond - hour * 3600;
+        min = (int) (timeSecond / 60);
+        timeSecond = timeSecond - min * 60;
+        sec = (int) timeSecond;
+
+        String fyear = year + " " + convertSu(year, "год", "года", "лет") + " ";
+        String fmonth = month + " " + convertSu(month, "месяц", "месяца", "месяцев") + " ";
+        String fweek = week + " " + convertSu(week, "неделю", "недели", "недель") + " ";
+        String fday = day + " " + convertSu(day, "день", "дня", "дней") + " ";
+        String fhour = hour + " " + convertSu(hour, "час", "часа", "часов") + " ";
+        String fmin = min + " " + convertSu(min, "минуту", "минуты", "минут") + " ";
+        String fsec = sec + " " + convertSu(sec, "секунду", "секунды", "секунд") + " ";
+        if (year <= 0) {
+            fyear = "";
+        }
+        if (month <= 0) {
+            fmonth = "";
+        }
+        if (week <= 0) {
+            fweek = "";
+        }
+        if (day <= 0) {
+            fday = "";
+        }
+        if (hour <= 0) {
+            fhour = "";
+        }
+        if (min <= 0) {
+            fmin = "";
+        }
+        if (sec <= 0) {
+            fsec = "";
+        }
+        if (sec <= 0 && min <= 0 && hour <= 0 && day <= 0 && week <= 0 && month <= 0 && year <= 0) {
+            fsec = "сейчас.";
+        }
+
+        String done = fyear + fmonth + fweek + fday + fhour + fmin + fsec;
+
+        return done;
+
+    }
+
+    //Не мой метод. С хабра где то нашел.
+    //Нужен для склонений.
+    public static String convertSu(int n, String s1, String s2, String s3) {
+        n = Math.abs(n) % 100;
+        int n1 = n % 10;
+        if (n > 10 && n < 20) return s3;
+        if (n1 > 1 && n1 < 5) return s2;
+        if (n1 == 1) return s1;
+        return s3;
+    }
 
 }

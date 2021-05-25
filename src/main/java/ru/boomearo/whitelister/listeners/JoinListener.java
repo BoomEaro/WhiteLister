@@ -28,7 +28,7 @@ public class JoinListener implements Listener {
                 e.disallow(Result.KICK_WHITELIST, WhiteLister.getInstance().serverPerms);
                 e.setLoginResult(Result.KICK_WHITELIST);
                 PlayerCoolDown pcd = manager.getPlayerCd(pName);
-                if (pcd == null){
+                if (pcd == null) {
                     Bukkit.broadcastMessage(WhiteLister.getInstance().onJoinMsg.replace("%PLAYER%", pName));
                     manager.addPlayerCd(new PlayerCoolDown(pName));
                 }
@@ -39,7 +39,7 @@ public class JoinListener implements Listener {
                     e.disallow(Result.KICK_WHITELIST, WhiteLister.getInstance().serverPerms);
                     e.setLoginResult(Result.KICK_WHITELIST);
                     PlayerCoolDown pcd = manager.getPlayerCd(pName);
-                    if (pcd == null){
+                    if (pcd == null) {
                         Bukkit.broadcastMessage(WhiteLister.getInstance().onJoinMsg.replace("%PLAYER%", pName));
                         manager.addPlayerCd(new PlayerCoolDown(pName));
                     }
@@ -66,16 +66,16 @@ public class JoinListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoinEvent(PlayerJoinEvent e) {
-        e.setJoinMessage((String)null);
+        e.setJoinMessage((String) null);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerQuitEvent(PlayerQuitEvent e) {
-        e.setQuitMessage((String)null);
+        e.setQuitMessage((String) null);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerKickEvent(PlayerKickEvent e) {
-        e.setLeaveMessage((String)null);
+        e.setLeaveMessage((String) null);
     }
 }
