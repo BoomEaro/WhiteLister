@@ -5,6 +5,7 @@ author: BoomEaro
 api-version: 1.13
 description: Whitelist fixer
 commands:
-  wl:
+  whitelister:
+    aliases: [wl]
     usage: /wl add/remove/list
     description: add/remove player

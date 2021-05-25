@@ -60,7 +60,7 @@ public class WhiteLister extends JavaPlugin {
             }
         }
 
-        getCommand("wl").setExecutor(new Commands());
+        getCommand("whitelister").setExecutor(new Commands());
 
         getLogger().info("Успешно включен.");
     }
