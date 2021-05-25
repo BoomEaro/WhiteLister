@@ -33,7 +33,7 @@ public class JoinListener implements Listener {
                 if (manager.hasSendedJoinMessage(pName, 60)) {
                     manager.addJoinMessageCd(pName, System.currentTimeMillis());
 
-                    Bukkit.broadcastMessage(config.getOnJoinMsg().replace("%PLAYER%", pName));
+                    WhiteLister.broadcastPlayers(config.getOnJoinMsg().replace("%PLAYER%", pName));
                 }
                 return;
             }
@@ -46,7 +46,7 @@ public class JoinListener implements Listener {
                     if (manager.hasSendedJoinMessage(pName, 60)) {
                         manager.addJoinMessageCd(pName, System.currentTimeMillis());
 
-                        Bukkit.broadcastMessage(config.getOnJoinMsg().replace("%PLAYER%", pName));
+                        WhiteLister.broadcastPlayers(config.getOnJoinMsg().replace("%PLAYER%", pName));
                     }
                 }
             }

@@ -82,7 +82,7 @@ public class Commands implements CommandExecutor, TabCompleter {
                         config.saveConfig();
 
                         WhiteLister.getInstance().kickerNonWhitelistPlayer();
-                        Bukkit.broadcastMessage("§aБелый список успешно активирован консолью. Теперь никто кроме добавленных игроков зайти не сможет.");
+                        WhiteLister.broadcastPlayers("§aБелый список успешно активирован консолью. Теперь никто кроме добавленных игроков зайти не сможет.");
                         sender.sendMessage("Успешно включен белый список. (enabled)");
                     }
                     else {
@@ -102,7 +102,7 @@ public class Commands implements CommandExecutor, TabCompleter {
                         config.saveConfig();
 
                         WhiteLister.getInstance().kickerNonWhitelistPlayer();
-                        Bukkit.broadcastMessage("§aБелый список успешно деактивирован консолью. Теперь любой игрок может зайти на сервер.");
+                        WhiteLister.broadcastPlayers("§aБелый список успешно деактивирован консолью. Теперь любой игрок может зайти на сервер.");
                         sender.sendMessage("Успешно выключен белый список. (disabled)");
                     }
                     else {
@@ -121,7 +121,7 @@ public class Commands implements CommandExecutor, TabCompleter {
                         config.setEnabledProtection(false);
                         config.saveConfig();
 
-                        Bukkit.broadcastMessage("§cВход только админам теперь не функционирует. Теперь любый игрок добавленный в белый список может зайти на сервер.");
+                        WhiteLister.broadcastPlayers("§cВход только админам теперь не функционирует. Теперь любый игрок добавленный в белый список может зайти на сервер.");
                         sender.sendMessage("Успешно выключен вход только админам. (disabled)");
                     }
                     else {
@@ -129,7 +129,7 @@ public class Commands implements CommandExecutor, TabCompleter {
                         config.saveConfig();
 
                         WhiteLister.getInstance().kickerNonSuperAdmins();
-                        Bukkit.broadcastMessage("§aВход только админам активирован. Теперь только супер админы могут зайти на сервер.");
+                        WhiteLister.broadcastPlayers("§aВход только админам активирован. Теперь только супер админы могут зайти на сервер.");
                         sender.sendMessage("Успешно включен вход только админам. (enabled)");
                     }
                 }
@@ -150,7 +150,7 @@ public class Commands implements CommandExecutor, TabCompleter {
                         Sql.getInstance().putWhiteList(args[1], false, System.currentTimeMillis(), sender.getName());
                     });
 
-                    Bukkit.broadcastMessage(WhiteLister.getInstance().getConfigManager().getBcAddPl().replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
+                    WhiteLister.broadcastPlayers(WhiteLister.getInstance().getConfigManager().getBcAddPl().replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
                     sender.sendMessage(WhiteLister.getInstance().getConfigManager().getAddPl().replace("%PLAYER%", args[1]));
                     return true;
                 }
@@ -169,7 +169,7 @@ public class Commands implements CommandExecutor, TabCompleter {
                             sender.sendMessage(WhiteLister.getInstance().getConfigManager().getRemoveFailedByProtect());
                             pl.setGameMode(GameMode.SURVIVAL);
                             pl.setHealth(0);
-                            Bukkit.broadcastMessage(WhiteLister.getInstance().getConfigManager().getBcRemoveFailedByProtect().replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
+                            WhiteLister.broadcastPlayers(WhiteLister.getInstance().getConfigManager().getBcRemoveFailedByProtect().replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
                             return true;
                         }
                         else {
@@ -185,7 +185,7 @@ public class Commands implements CommandExecutor, TabCompleter {
                                 Sql.getInstance().removeWhiteList(args[1]);
                             });
 
-                            Bukkit.broadcastMessage(WhiteLister.getInstance().getConfigManager().getBcRemovePl().replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
+                            WhiteLister.broadcastPlayers(WhiteLister.getInstance().getConfigManager().getBcRemovePl().replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
                             sender.sendMessage(WhiteLister.getInstance().getConfigManager().getRemovePl().replace("%PLAYER%", args[1]));
                             Player pl = WhiteLister.getRightPlayer(args[1]);
                             if (pl != null) {

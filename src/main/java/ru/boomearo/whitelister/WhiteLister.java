@@ -86,6 +86,12 @@ public class WhiteLister extends JavaPlugin {
         return this.manager;
     }
 
+    public static void broadcastPlayers(String text) {
+        for (Player pl : Bukkit.getOnlinePlayers()) {
+            pl.sendMessage(text);
+        }
+    }
+
     private void loadDataBase() {
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
@@ -122,7 +128,8 @@ public class WhiteLister extends JavaPlugin {
             }
         }
         if (iskickmsg) {
-            Bukkit.broadcastMessage(ChatColor.RED + "Все кто не был в белом списке, были автоматически кикнуты.");
+
+            broadcastPlayers(ChatColor.RED + "Все кто не был в белом списке, были автоматически кикнуты.");
         }
     }
 
@@ -140,7 +147,7 @@ public class WhiteLister extends JavaPlugin {
             }
         }
         if (iskickmsg) {
-            Bukkit.broadcastMessage(ChatColor.RED + "Все кто не был в списке супер админов, были автоматически кикнуты.");
+            broadcastPlayers(ChatColor.RED + "Все кто не был в списке супер админов, были автоматически кикнуты.");
         }
     }
 
