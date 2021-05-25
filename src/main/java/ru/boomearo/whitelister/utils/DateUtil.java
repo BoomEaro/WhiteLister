@@ -99,15 +99,19 @@ public class DateUtil {
 
     //Мой метод :3
     //Формирование текста для бана.
-    public static String formatedTime(long time, Boolean d) {
-        long counterdd;
-        if (d == true) {
-            counterdd = time / 1000;
+    public static String formatedTime(long time, boolean devide) {
+        long timeSecond;
+        if (devide) {
+            timeSecond = time / 1000;
         }
         else {
-            counterdd = time;
+            timeSecond = time;
         }
-        long timeSecond = counterdd;
+
+        if (timeSecond <= 0) {
+            return "0 секунд";
+        }
+
         int year = 0;
         int month = 0;
         int week = 0;
@@ -117,54 +121,43 @@ public class DateUtil {
         int sec = 0;
 
         year = (int) (timeSecond / 31536000);
-        timeSecond = timeSecond - year * 31536000;
+        timeSecond = timeSecond - year * 31536000L;
         month = (int) (timeSecond / 2678400);
-        timeSecond = timeSecond - month * 2678400;
+        timeSecond = timeSecond - month * 2678400L;
         week = (int) (timeSecond / 604800);
-        timeSecond = timeSecond - week * 604800;
+        timeSecond = timeSecond - week * 604800L;
         day = (int) (timeSecond / 86400);
-        timeSecond = timeSecond - day * 86400;
+        timeSecond = timeSecond - day * 86400L;
         hour = (int) (timeSecond / 3600);
-        timeSecond = timeSecond - hour * 3600;
+        timeSecond = timeSecond - hour * 3600L;
         min = (int) (timeSecond / 60);
-        timeSecond = timeSecond - min * 60;
+        timeSecond = timeSecond - min * 60L;
         sec = (int) timeSecond;
 
-        String fyear = year + " " + convertSu(year, "год", "года", "лет") + " ";
-        String fmonth = month + " " + convertSu(month, "месяц", "месяца", "месяцев") + " ";
-        String fweek = week + " " + convertSu(week, "неделю", "недели", "недель") + " ";
-        String fday = day + " " + convertSu(day, "день", "дня", "дней") + " ";
-        String fhour = hour + " " + convertSu(hour, "час", "часа", "часов") + " ";
-        String fmin = min + " " + convertSu(min, "минуту", "минуты", "минут") + " ";
-        String fsec = sec + " " + convertSu(sec, "секунду", "секунды", "секунд") + " ";
-        if (year <= 0) {
-            fyear = "";
+        StringBuilder sb = new StringBuilder();
+        if (year > 0) {
+            sb.append(year + " " + convertSu(year, "год", "года", "лет") + (month > 0 || week > 0 || day > 0 || hour > 0 || min > 0 || sec > 0 ? " " : ""));
         }
-        if (month <= 0) {
-            fmonth = "";
+        if (month > 0) {
+            sb.append(month + " " + convertSu(month, "месяц", "месяца", "месяцев") + (week > 0 || day > 0 || hour > 0 || min > 0 || sec > 0 ? " " : ""));
         }
-        if (week <= 0) {
-            fweek = "";
+        if (week > 0) {
+            sb.append(week + " " + convertSu(week, "неделю", "недели", "недель") + (day > 0 || hour > 0 || min > 0 || sec > 0 ? " " : ""));
         }
-        if (day <= 0) {
-            fday = "";
+        if (day > 0) {
+            sb.append(day + " " + convertSu(day, "день", "дня", "дней") + (hour > 0 || min > 0 || sec > 0 ? " " : ""));
         }
-        if (hour <= 0) {
-            fhour = "";
+        if (hour > 0) {
+            sb.append(hour + " " + convertSu(hour, "час", "часа", "часов") + (min > 0 || sec > 0 ? " " : ""));
         }
-        if (min <= 0) {
-            fmin = "";
+        if (min > 0) {
+            sb.append(min + " " + convertSu(min, "минуту", "минуты", "минут") + (sec > 0 ? " " : ""));
         }
-        if (sec <= 0) {
-            fsec = "";
-        }
-        if (sec <= 0 && min <= 0 && hour <= 0 && day <= 0 && week <= 0 && month <= 0 && year <= 0) {
-            fsec = "сейчас.";
+        if (sec > 0) {
+            sb.append(sec + " " + convertSu(sec, "секунду", "секунды", "секунд"));
         }
 
-        String done = fyear + fmonth + fweek + fday + fhour + fmin + fsec;
-
-        return done;
+        return sb.toString();
 
     }
 
