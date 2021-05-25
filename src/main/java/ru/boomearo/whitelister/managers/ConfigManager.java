@@ -14,7 +14,6 @@ public final class ConfigManager {
     private String removePl = "";
     private String bcRemovePl = "";
     private String kickMsgWl = "";
-    private String notEnougthArgs = "";
     private String serverPerms = "";
     private String serverPermsOnlyProtected = "";
     private String removeProtectConsole = "";
@@ -23,7 +22,6 @@ public final class ConfigManager {
     private String bcAddPl = "";
     private String notPerms = "";
     private String removeFailedByProtect = "";
-    private String addFailedByBanned = "";
     private String addFailedPlayerIs = "";
     private String removeFailedPlayerNotExist = "";
     private String removeYourSelfFailed = "";
@@ -43,7 +41,6 @@ public final class ConfigManager {
         this.removeFailedPlayerNotExist = fc.getString("messages.removefailedplayernotexist").replace("&", "§");
         this.removeYourSelfFailed = fc.getString("messages.removeyourselffailed").replace("&", "§");
         this.bcRemovePl = fc.getString("messages.bcremovepl").replace("&", "§");
-        this.notEnougthArgs = fc.getString("messages.notenougthargs").replace("&", "§");
         this.notPerms = fc.getString("messages.notperms").replace("&", "§");
         this.kickMsgWl = fc.getString("messages.kickmsgwl").replace("&", "§");
         this.addFailedPlayerIs = fc.getString("messages.addfailedplayeris").replace("&", "§");
@@ -52,7 +49,6 @@ public final class ConfigManager {
         this.bcRemoveFailedByProtect = fc.getString("messages.bcremovefailedbyprotect").replace("&", "§");
         this.removeProtectConsole = fc.getString("messages.removeprotectconsole").replace("&", "§");
         this.consoleOnly = fc.getString("messages.consoleonly").replace("&", "§");
-        this.addFailedByBanned = fc.getString("messages.addfailedbybanned").replace("&", "§");
         this.serverPerms = fc.getString("messages.serverperms").replace("&", "§");
         this.serverPermsOnlyProtected = fc.getString("messages.serverpermsonlyprotected").replace("&", "§");
     }
@@ -89,10 +85,6 @@ public final class ConfigManager {
         this.enabledProtection = enabledProtection;
     }
 
-    public String getAddFailedByBanned() {
-        return this.addFailedByBanned;
-    }
-
     public String getAddFailedPlayerIs() {
         return this.addFailedPlayerIs;
     }
@@ -119,10 +111,6 @@ public final class ConfigManager {
 
     public String getKickMsgWl() {
         return this.kickMsgWl;
-    }
-
-    public String getNotEnougthArgs() {
-        return this.notEnougthArgs;
     }
 
     public String getNotPerms() {

@@ -38,7 +38,7 @@ public class JoinListener implements Listener {
             }
             if (config.isEnabledProtection()) {
                 if (!wlp.isProtected()) {
-                    e.disallow(Result.KICK_WHITELIST, config.getServerPerms());
+                    e.disallow(Result.KICK_WHITELIST, config.getServerPermsOnlyProtected());
                     e.setLoginResult(Result.KICK_WHITELIST);
                     PlayerCoolDown pcd = manager.getPlayerCd(pName);
                     if (pcd == null) {
