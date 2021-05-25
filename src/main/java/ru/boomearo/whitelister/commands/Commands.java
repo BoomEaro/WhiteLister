@@ -243,7 +243,8 @@ public class Commands implements CommandExecutor, TabCompleter {
                 try {
                     page = Integer.parseInt(args[1]);
                 }
-                catch (Exception e) {}
+                catch (Exception e) {
+                }
                 if (page == null) {
                     sender.sendMessage("Аргумент '" + args[1] + "' должен быть цифрой.");
                     return true;
@@ -298,26 +299,36 @@ public class Commands implements CommandExecutor, TabCompleter {
         }
         if (args.length == 2) {
             if (args[0].equalsIgnoreCase("add")) {
-                List<String> ss = new ArrayList<String>();
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    ss.add(p.getName());
-                }
                 List<String> matches = new ArrayList<>();
                 String search = args[1].toLowerCase();
-                for (String world : ss) {
-                    if (world.toLowerCase().startsWith(search)) {
-                        matches.add(world);
+                for (Player pl : Bukkit.getOnlinePlayers()) {
+                    if (pl.getName().toLowerCase().startsWith(search)) {
+                        matches.add(pl.getName());
                     }
                 }
                 return matches;
 
             }
-            else if (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("info") || args[0].equalsIgnoreCase("toggleprotected")) {
+            else if (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("info")) {
                 List<String> matches = new ArrayList<>();
                 String search = args[1].toLowerCase();
-                for (String world : WhiteLister.getInstance().getWhiteListManager().getAllWhiteListedPlayerString()) {
-                    if (world.toLowerCase().startsWith(search)) {
-                        matches.add(world);
+                for (String name : WhiteLister.getInstance().getWhiteListManager().getAllWhiteListedPlayerString()) {
+                    if (name.toLowerCase().startsWith(search)) {
+                        matches.add(name);
+                    }
+                }
+                return matches;
+
+            }
+            else if (args[0].equalsIgnoreCase("toggleprotected")) {
+                List<String> matches = new ArrayList<>();
+                String search = args[1].toLowerCase();
+
+                for (WhiteListedPlayer wlp : WhiteLister.getInstance().getWhiteListManager().getAllWhiteListedPlayer()) {
+                    if (wlp.isProtected()) {
+                        if (wlp.getName().toLowerCase().startsWith(search)) {
+                            matches.add(wlp.getName());
+                        }
                     }
                 }
                 return matches;
