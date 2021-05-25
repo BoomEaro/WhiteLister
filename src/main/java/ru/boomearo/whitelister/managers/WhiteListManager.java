@@ -6,25 +6,38 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import ru.boomearo.whitelister.object.WhiteListedPlayer;
-import ru.boomearo.whitelister.runnable.PlayerCoolDown;
 
 public final class WhiteListManager {
 
-    private final ConcurrentMap<String, PlayerCoolDown> playersCD = new ConcurrentHashMap<String, PlayerCoolDown>();
+    private final ConcurrentMap<String, Long> joinMessageCd = new ConcurrentHashMap<String, Long>();
     private final ConcurrentMap<String, WhiteListedPlayer> whiteList = new ConcurrentHashMap<String, WhiteListedPlayer>();
 
     public static final String prefix = "§8[§b!!!§8]:§f ";
 
-    public PlayerCoolDown getPlayerCd(String player) {
-        return this.playersCD.get(player);
+    public boolean hasSendedJoinMessage(String name, int time) {
+        Long plTime = getJoinMessageCd(name);
+        if (plTime == null) {
+            return true;
+        }
+
+        if (((System.currentTimeMillis() - plTime) / 1000) >= time) {
+            removeJoinMessageCd(name);
+            return true;
+        }
+
+        return false;
     }
 
-    public void addPlayerCd(PlayerCoolDown player) {
-        this.playersCD.put(player.getName(), player);
+    public Long getJoinMessageCd(String name) {
+        return this.joinMessageCd.get(name);
     }
 
-    public void removePlayerCd(String player) {
-        this.playersCD.remove(player);
+    public void removeJoinMessageCd(String name) {
+        this.joinMessageCd.remove(name);
+    }
+
+    public void addJoinMessageCd(String name, long time) {
+        this.joinMessageCd.put(name, time);
     }
 
     public WhiteListedPlayer getWhiteListedPlayer(String name) {

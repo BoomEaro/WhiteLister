@@ -15,7 +15,6 @@ import ru.boomearo.whitelister.WhiteLister;
 import ru.boomearo.whitelister.managers.ConfigManager;
 import ru.boomearo.whitelister.managers.WhiteListManager;
 import ru.boomearo.whitelister.object.WhiteListedPlayer;
-import ru.boomearo.whitelister.runnable.PlayerCoolDown;
 
 public class JoinListener implements Listener {
 
@@ -25,25 +24,29 @@ public class JoinListener implements Listener {
         ConfigManager config = WhiteLister.getInstance().getConfigManager();
         WhiteListManager manager = WhiteLister.getInstance().getWhiteListManager();
         if (config.isEnabled()) {
+
             WhiteListedPlayer wlp = manager.getWhiteListedPlayer(pName);
             if (wlp == null) {
                 e.disallow(Result.KICK_WHITELIST, config.getServerPerms());
                 e.setLoginResult(Result.KICK_WHITELIST);
-                PlayerCoolDown pcd = manager.getPlayerCd(pName);
-                if (pcd == null) {
+
+                if (manager.hasSendedJoinMessage(pName, 60)) {
+                    manager.addJoinMessageCd(pName, System.currentTimeMillis());
+
                     Bukkit.broadcastMessage(config.getOnJoinMsg().replace("%PLAYER%", pName));
-                    manager.addPlayerCd(new PlayerCoolDown(pName));
                 }
                 return;
             }
+
             if (config.isEnabledProtection()) {
                 if (!wlp.isProtected()) {
                     e.disallow(Result.KICK_WHITELIST, config.getServerPermsOnlyProtected());
                     e.setLoginResult(Result.KICK_WHITELIST);
-                    PlayerCoolDown pcd = manager.getPlayerCd(pName);
-                    if (pcd == null) {
+
+                    if (manager.hasSendedJoinMessage(pName, 60)) {
+                        manager.addJoinMessageCd(pName, System.currentTimeMillis());
+
                         Bukkit.broadcastMessage(config.getOnJoinMsg().replace("%PLAYER%", pName));
-                        manager.addPlayerCd(new PlayerCoolDown(pName));
                     }
                 }
             }
