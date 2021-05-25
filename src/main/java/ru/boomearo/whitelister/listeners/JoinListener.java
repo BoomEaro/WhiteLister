@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 
 import ru.boomearo.whitelister.WhiteLister;
+import ru.boomearo.whitelister.managers.ConfigManager;
 import ru.boomearo.whitelister.managers.WhiteListManager;
 import ru.boomearo.whitelister.object.WhiteListedPlayer;
 import ru.boomearo.whitelister.runnable.PlayerCoolDown;
@@ -21,26 +22,27 @@ public class JoinListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAsyncPlayerPreLoginEvent(AsyncPlayerPreLoginEvent e) {
         String pName = e.getName();
+        ConfigManager config = WhiteLister.getInstance().getConfigManager();
         WhiteListManager manager = WhiteLister.getInstance().getWhiteListManager();
-        if (manager.isWhiteListEnabled()) {
+        if (config.isEnabled()) {
             WhiteListedPlayer wlp = manager.getWhiteListedPlayer(pName);
             if (wlp == null) {
-                e.disallow(Result.KICK_WHITELIST, WhiteLister.getInstance().serverPerms);
+                e.disallow(Result.KICK_WHITELIST, config.getServerPerms());
                 e.setLoginResult(Result.KICK_WHITELIST);
                 PlayerCoolDown pcd = manager.getPlayerCd(pName);
                 if (pcd == null) {
-                    Bukkit.broadcastMessage(WhiteLister.getInstance().onJoinMsg.replace("%PLAYER%", pName));
+                    Bukkit.broadcastMessage(config.getOnJoinMsg().replace("%PLAYER%", pName));
                     manager.addPlayerCd(new PlayerCoolDown(pName));
                 }
                 return;
             }
-            if (manager.isWhiteListOnlyAdminEnabled()) {
+            if (config.isEnabledProtection()) {
                 if (!wlp.isProtected()) {
-                    e.disallow(Result.KICK_WHITELIST, WhiteLister.getInstance().serverPerms);
+                    e.disallow(Result.KICK_WHITELIST, config.getServerPerms());
                     e.setLoginResult(Result.KICK_WHITELIST);
                     PlayerCoolDown pcd = manager.getPlayerCd(pName);
                     if (pcd == null) {
-                        Bukkit.broadcastMessage(WhiteLister.getInstance().onJoinMsg.replace("%PLAYER%", pName));
+                        Bukkit.broadcastMessage(config.getOnJoinMsg().replace("%PLAYER%", pName));
                         manager.addPlayerCd(new PlayerCoolDown(pName));
                     }
                 }
@@ -51,13 +53,13 @@ public class JoinListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerLoginEvent(PlayerLoginEvent e) {
         String testRealIp = e.getRealAddress().getHostAddress();
-        String realIp = WhiteLister.getInstance().getWhiteListManager().getRealConnectionIp();
+        String realIp = WhiteLister.getInstance().getConfigManager().getRealIp();
         if (realIp != null) {
             if (testRealIp.equals(realIp)) {
                 return;
             }
 
-            e.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, WhiteLister.getInstance().serverPerms);
+            e.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, WhiteLister.getInstance().getConfigManager().getServerPerms());
             e.setResult(PlayerLoginEvent.Result.KICK_WHITELIST);
 
             WhiteLister.getInstance().getLogger().warning("Попытка игрока " + e.getPlayer().getName() + " зайти в обход! Фейковй ип: " + e.getAddress().getHostAddress() + ". Настоящий ип адрес: " + testRealIp);

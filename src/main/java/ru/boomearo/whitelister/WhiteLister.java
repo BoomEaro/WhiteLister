@@ -10,6 +10,7 @@ import ru.boomearo.whitelister.commands.Commands;
 import ru.boomearo.whitelister.database.Sql;
 import ru.boomearo.whitelister.database.sections.SectionWhiteList;
 import ru.boomearo.whitelister.listeners.JoinListener;
+import ru.boomearo.whitelister.managers.ConfigManager;
 import ru.boomearo.whitelister.managers.WhiteListManager;
 import ru.boomearo.whitelister.object.WhiteListedPlayer;
 
@@ -19,6 +20,7 @@ import java.util.List;
 
 public class WhiteLister extends JavaPlugin {
 
+    private ConfigManager config = null;
     private WhiteListManager manager = null;
 
     private static WhiteLister instance = null;
@@ -33,18 +35,23 @@ public class WhiteLister extends JavaPlugin {
             saveDefaultConfig();
         }
 
+        if (this.config == null) {
+            this.config = new ConfigManager();
+
+            this.config.loadConfig();
+        }
+
         if (this.manager == null) {
             this.manager = new WhiteListManager();
         }
 
         loadDataBase();
-        parse();
         loadWhiteList();
 
         getServer().getPluginManager().registerEvents(new JoinListener(), this);
 
-        if (this.manager.isWhiteListEnabled()) {
-            if (this.manager.isWhiteListOnlyAdminEnabled()) {
+        if (this.config.isEnabled()) {
+            if (this.config.isEnabledProtection()) {
                 kickerNonWhitelistPlayer();
                 kickerNonSuperAdmins();
             }
@@ -71,7 +78,15 @@ public class WhiteLister extends JavaPlugin {
         getLogger().info("Успешно выключен.");
     }
 
-    public void loadDataBase() {
+    public ConfigManager getConfigManager() {
+        return config;
+    }
+
+    public WhiteListManager getWhiteListManager() {
+        return this.manager;
+    }
+
+    private void loadDataBase() {
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
         }
@@ -82,10 +97,6 @@ public class WhiteLister extends JavaPlugin {
             e.printStackTrace();
         }
 
-    }
-
-    public WhiteListManager getWhiteListManager() {
-        return this.manager;
     }
 
     private void loadWhiteList() {
@@ -101,36 +112,6 @@ public class WhiteLister extends JavaPlugin {
 
     public static WhiteLister getInstance() {
         return instance;
-    }
-
-
-    public String onJoinMsg, addPl, removePl, bcRemovePl, kickMsgWl, notEnougthArgs, serverPerms,
-            serverPermsOnlyProtected, removeProtectConsole, consoleOnly, bcRemoveFailedByProtect, bcAddPl,
-            notPerms, removeFailedByProtect, addFailedByBanned, addFailedPlayerIs, removeFailedPlayerNotExist, removeYourSelfFailed;
-
-    public void parse() {
-        this.manager.setWhiteListEnabled(this.getConfig().getBoolean("enabled"));
-        this.manager.setWhiteListOnlyAdminEnabled(this.getConfig().getBoolean("enableOnlyProtectedJoin"));
-        this.manager.setRealConnectionIp(this.getConfig().getString("realIp"));
-
-        this.onJoinMsg = this.getConfig().getString("messages.onjoinmsg").replace("&", "\u00a7");
-        this.addPl = this.getConfig().getString("messages.addpl").replace("&", "\u00a7");
-        this.removePl = this.getConfig().getString("messages.removepl").replace("&", "\u00a7");
-        this.removeFailedPlayerNotExist = this.getConfig().getString("messages.removefailedplayernotexist").replace("&", "\u00a7");
-        this.removeYourSelfFailed = this.getConfig().getString("messages.removeyourselffailed").replace("&", "\u00a7");
-        this.bcRemovePl = this.getConfig().getString("messages.bcremovepl").replace("&", "\u00a7");
-        this.notEnougthArgs = this.getConfig().getString("messages.notenougthargs").replace("&", "\u00a7");
-        this.notPerms = this.getConfig().getString("messages.notperms").replace("&", "\u00a7");
-        this.kickMsgWl = this.getConfig().getString("messages.kickmsgwl").replace("&", "\u00a7");
-        this.addFailedPlayerIs = this.getConfig().getString("messages.addfailedplayeris").replace("&", "\u00a7");
-        this.bcAddPl = this.getConfig().getString("messages.bcaddpl").replace("&", "\u00a7");
-        this.removeFailedByProtect = this.getConfig().getString("messages.removefailedbyprotect").replace("&", "\u00a7");
-        this.bcRemoveFailedByProtect = this.getConfig().getString("messages.bcremovefailedbyprotect").replace("&", "\u00a7");
-        this.removeProtectConsole = this.getConfig().getString("messages.removeprotectconsole").replace("&", "\u00a7");
-        this.consoleOnly = this.getConfig().getString("messages.consoleonly").replace("&", "\u00a7");
-        this.addFailedByBanned = this.getConfig().getString("messages.addfailedbybanned").replace("&", "\u00a7");
-        this.serverPerms = this.getConfig().getString("messages.serverperms").replace("&", "\u00a7");
-        this.serverPermsOnlyProtected = this.getConfig().getString("messages.serverpermsonlyprotected").replace("&", "\u00a7");
     }
 
     public void kickerNonWhitelistPlayer() {
