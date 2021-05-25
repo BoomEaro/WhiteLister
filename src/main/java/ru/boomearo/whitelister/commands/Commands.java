@@ -17,8 +17,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import ru.boomearo.whitelister.WhiteLister;
-import ru.boomearo.whitelister.database.runnable.PutWhiteListThread;
-import ru.boomearo.whitelister.database.runnable.RemoveWhiteListThread;
+import ru.boomearo.whitelister.database.Sql;
 import ru.boomearo.whitelister.managers.ConfigManager;
 import ru.boomearo.whitelister.managers.WhiteListManager;
 import ru.boomearo.whitelister.object.WhiteListedPlayer;
@@ -146,7 +145,10 @@ public class Commands implements CommandExecutor, TabCompleter {
                 WhiteListedPlayer wlp = manager.getWhiteListedPlayer(args[1]);
                 if (wlp == null) {
                     manager.addWhiteListedPlayer(new WhiteListedPlayer(args[1], false, System.currentTimeMillis(), sender.getName()));
-                    new PutWhiteListThread(args[1], false, System.currentTimeMillis(), sender.getName());
+
+                    Bukkit.getScheduler().runTaskAsynchronously(WhiteLister.getInstance(), () -> {
+                        Sql.getInstance().putWhiteList(args[1], false, System.currentTimeMillis(), sender.getName());
+                    });
 
                     Bukkit.broadcastMessage(WhiteLister.getInstance().getConfigManager().getBcAddPl().replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
                     sender.sendMessage(WhiteLister.getInstance().getConfigManager().getAddPl().replace("%PLAYER%", args[1]));
@@ -178,7 +180,10 @@ public class Commands implements CommandExecutor, TabCompleter {
                     else {
                         if (!args[1].equals(sender.getName())) {
                             manager.removeWhiteListedPlayer(args[1]);
-                            new RemoveWhiteListThread(args[1]);
+
+                            Bukkit.getScheduler().runTaskAsynchronously(WhiteLister.getInstance(), () -> {
+                                Sql.getInstance().removeWhiteList(args[1]);
+                            });
 
                             Bukkit.broadcastMessage(WhiteLister.getInstance().getConfigManager().getBcRemovePl().replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
                             sender.sendMessage(WhiteLister.getInstance().getConfigManager().getRemovePl().replace("%PLAYER%", args[1]));
