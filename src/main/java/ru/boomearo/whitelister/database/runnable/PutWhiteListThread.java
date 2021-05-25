@@ -26,7 +26,6 @@ public class PutWhiteListThread extends BukkitRunnable {
         this.runTaskAsynchronously(WhiteLister.getInstance());
     }
 
-
     @Override
     public void run() {
         try {

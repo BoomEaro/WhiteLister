@@ -69,7 +69,7 @@ public class WhiteLister extends JavaPlugin {
     public void onDisable() {
         try {
             getLogger().info("Отключаюсь от базы данных");
-            Sql.getInstance().Disconnect();
+            Sql.getInstance().disconnect();
             getLogger().info("Успешно отключился от базы данных");
         }
         catch (SQLException e1) {
@@ -90,23 +90,20 @@ public class WhiteLister extends JavaPlugin {
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
         }
+
         try {
+            Sql.initSql();
+
             Sql.getInstance().createNewDatabaseWhiteList();
         }
-        catch (SQLException e) {
-            e.printStackTrace();
+        catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
-
     }
 
     private void loadWhiteList() {
-        try {
-            for (SectionWhiteList spb : Sql.getInstance().getAllDataWhiteList()) {
-                this.manager.addWhiteListedPlayer(new WhiteListedPlayer(spb.name, spb.isProtected, spb.timeAdded, spb.whoAdd));
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
+        for (SectionWhiteList spb : Sql.getInstance().getAllDataWhiteList()) {
+            this.manager.addWhiteListedPlayer(new WhiteListedPlayer(spb.name, spb.isProtected, spb.timeAdded, spb.whoAdd));
         }
     }
 
