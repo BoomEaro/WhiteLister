@@ -5,7 +5,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
@@ -70,16 +69,11 @@ public class JoinListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoinEvent(PlayerJoinEvent e) {
-        e.setJoinMessage((String) null);
+        e.setJoinMessage(null);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerQuitEvent(PlayerQuitEvent e) {
-        e.setQuitMessage((String) null);
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerKickEvent(PlayerKickEvent e) {
-        e.setLeaveMessage((String) null);
+        e.setQuitMessage(null);
     }
 }

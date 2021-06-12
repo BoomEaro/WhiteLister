@@ -259,8 +259,7 @@ public class Commands implements CommandExecutor, TabCompleter {
     private static void sendPlayersList(CommandSender sender, int page) {
         Bukkit.getScheduler().runTaskAsynchronously(WhiteLister.getInstance(), () -> {
 
-            TreeSet<WhiteListedPlayer> sort = new TreeSet<WhiteListedPlayer>();
-            sort.addAll(WhiteLister.getInstance().getWhiteListManager().getAllWhiteListedPlayer());
+            TreeSet<WhiteListedPlayer> sort = new TreeSet<WhiteListedPlayer>(WhiteLister.getInstance().getWhiteListManager().getAllWhiteListedPlayer());
 
             List<String> data = new ArrayList<String>();
             for (WhiteListedPlayer wlp : sort) {

@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import ru.boomearo.whitelister.WhiteLister;
 
 public class DateUtil {
-    private static Pattern timePattern = Pattern.compile("(?:([0-9]+)\\s*y[a-z]*[,\\s]*)?" + "(?:([0-9]+)\\s*mo[a-z]*[,\\s]*)?" + "(?:([0-9]+)\\s*w[a-z]*[,\\s]*)?" + "(?:([0-9]+)\\s*d[a-z]*[,\\s]*)?" + "(?:([0-9]+)\\s*h[a-z]*[,\\s]*)?" + "(?:([0-9]+)\\s*m[a-z]*[,\\s]*)?" + "(?:([0-9]+)\\s*(?:s[a-z]*)?)?", Pattern.CASE_INSENSITIVE);
+    private static final Pattern timePattern = Pattern.compile("(?:([0-9]+)\\s*y[a-z]*[,\\s]*)?" + "(?:([0-9]+)\\s*mo[a-z]*[,\\s]*)?" + "(?:([0-9]+)\\s*w[a-z]*[,\\s]*)?" + "(?:([0-9]+)\\s*d[a-z]*[,\\s]*)?" + "(?:([0-9]+)\\s*h[a-z]*[,\\s]*)?" + "(?:([0-9]+)\\s*m[a-z]*[,\\s]*)?" + "(?:([0-9]+)\\s*(?:s[a-z]*)?)?", Pattern.CASE_INSENSITIVE);
     private static final int maxYears = 100;
 
     public static String removeTimePattern(String input) {
@@ -136,25 +136,25 @@ public class DateUtil {
 
         StringBuilder sb = new StringBuilder();
         if (year > 0) {
-            sb.append(year + " " + convertSu(year, "год", "года", "лет") + (month > 0 || week > 0 || day > 0 || hour > 0 || min > 0 || sec > 0 ? " " : ""));
+            sb.append(year).append(" ").append(convertSu(year, "год", "года", "лет")).append(month > 0 || week > 0 || day > 0 || hour > 0 || min > 0 || sec > 0 ? " " : "");
         }
         if (month > 0) {
-            sb.append(month + " " + convertSu(month, "месяц", "месяца", "месяцев") + (week > 0 || day > 0 || hour > 0 || min > 0 || sec > 0 ? " " : ""));
+            sb.append(month).append(" ").append(convertSu(month, "месяц", "месяца", "месяцев")).append(week > 0 || day > 0 || hour > 0 || min > 0 || sec > 0 ? " " : "");
         }
         if (week > 0) {
-            sb.append(week + " " + convertSu(week, "неделю", "недели", "недель") + (day > 0 || hour > 0 || min > 0 || sec > 0 ? " " : ""));
+            sb.append(week).append(" ").append(convertSu(week, "неделю", "недели", "недель")).append(day > 0 || hour > 0 || min > 0 || sec > 0 ? " " : "");
         }
         if (day > 0) {
-            sb.append(day + " " + convertSu(day, "день", "дня", "дней") + (hour > 0 || min > 0 || sec > 0 ? " " : ""));
+            sb.append(day).append(" ").append(convertSu(day, "день", "дня", "дней")).append(hour > 0 || min > 0 || sec > 0 ? " " : "");
         }
         if (hour > 0) {
-            sb.append(hour + " " + convertSu(hour, "час", "часа", "часов") + (min > 0 || sec > 0 ? " " : ""));
+            sb.append(hour).append(" ").append(convertSu(hour, "час", "часа", "часов")).append(min > 0 || sec > 0 ? " " : "");
         }
         if (min > 0) {
-            sb.append(min + " " + convertSu(min, "минуту", "минуты", "минут") + (sec > 0 ? " " : ""));
+            sb.append(min).append(" ").append(convertSu(min, "минуту", "минуты", "минут")).append(sec > 0 ? " " : "");
         }
         if (sec > 0) {
-            sb.append(sec + " " + convertSu(sec, "секунду", "секунды", "секунд"));
+            sb.append(sec).append(" ").append(convertSu(sec, "секунду", "секунды", "секунд"));
         }
 
         return sb.toString();
