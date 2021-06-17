@@ -34,8 +34,13 @@ public final class WhiteListManager {
     }
 
     public void loadWhiteList() {
-        for (SectionWhiteList spb : Sql.getInstance().getAllDataWhiteList()) {
-            addWhiteListedPlayer(new WhiteListedPlayer(spb.name, spb.isProtected, spb.timeAdded, spb.whoAdd));
+        try {
+            for (SectionWhiteList spb : Sql.getInstance().getAllDataWhiteList().get()) {
+                addWhiteListedPlayer(new WhiteListedPlayer(spb.name, spb.isProtected, spb.timeAdded, spb.whoAdd));
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -75,7 +80,7 @@ public final class WhiteListManager {
             }
         }
         if (isKickMsg) {
-            WhiteLister.broadcastPlayers( "§cВсе кто не был в белом списке, были автоматически кикнуты.");
+            WhiteLister.broadcastPlayers("§cВсе кто не был в белом списке, были автоматически кикнуты.");
         }
     }
 
@@ -85,7 +90,7 @@ public final class WhiteListManager {
             WhiteListedPlayer wlp = getWhiteListedPlayer(player.getName());
             if (wlp != null) {
                 if (!wlp.isProtected()) {
-                    player.kickPlayer(  "§c#Вылет: Вы были кикнуты с тестового сервера, потому что был активирован режим 'только админы'.");
+                    player.kickPlayer("§c#Вылет: Вы были кикнуты с тестового сервера, потому что был активирован режим 'только админы'.");
                     if (!isKickMsg) {
                         isKickMsg = true;
                     }

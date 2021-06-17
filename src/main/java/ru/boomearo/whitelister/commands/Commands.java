@@ -154,9 +154,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 
                 manager.addWhiteListedPlayer(new WhiteListedPlayer(args[1], false, System.currentTimeMillis(), sender.getName()));
 
-                Bukkit.getScheduler().runTaskAsynchronously(WhiteLister.getInstance(), () -> {
-                    Sql.getInstance().putWhiteList(args[1], false, System.currentTimeMillis(), sender.getName());
-                });
+                Sql.getInstance().putWhiteList(args[1], false, System.currentTimeMillis(), sender.getName());
 
                 WhiteLister.broadcastPlayers(WhiteLister.getInstance().getConfigManager().getBcAddPl().replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
                 sender.sendMessage(WhiteLister.getInstance().getConfigManager().getAddPl().replace("%PLAYER%", args[1]));
@@ -185,9 +183,7 @@ public class Commands implements CommandExecutor, TabCompleter {
                     if (!args[1].equals(sender.getName())) {
                         manager.removeWhiteListedPlayer(args[1]);
 
-                        Bukkit.getScheduler().runTaskAsynchronously(WhiteLister.getInstance(), () -> {
-                            Sql.getInstance().removeWhiteList(args[1]);
-                        });
+                        Sql.getInstance().removeWhiteList(args[1]);
 
                         WhiteLister.broadcastPlayers(WhiteLister.getInstance().getConfigManager().getBcRemovePl().replace("%PLAYERSENDER%", sender.getName()).replace("%PLAYER%", args[1]));
                         sender.sendMessage(WhiteLister.getInstance().getConfigManager().getRemovePl().replace("%PLAYER%", args[1]));
@@ -216,9 +212,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 
                 wlp.setProtected(!wlp.isProtected());
 
-                Bukkit.getScheduler().runTaskAsynchronously(WhiteLister.getInstance(), () -> {
-                    Sql.getInstance().updateWhiteList(wlp.getName(), wlp.isProtected(), wlp.getTimeAdded(), wlp.getWhoAdd());
-                });
+                Sql.getInstance().updateWhiteList(wlp.getName(), wlp.isProtected(), wlp.getTimeAdded(), wlp.getWhoAdd());
 
                 sender.sendMessage("Игроку " + args[1] + " успешно " + (wlp.isProtected() ? "Включена" : "Выключена") + " админ защита!");
             }

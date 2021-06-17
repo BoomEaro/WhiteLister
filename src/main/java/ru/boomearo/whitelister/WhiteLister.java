@@ -61,14 +61,14 @@ public class WhiteLister extends JavaPlugin {
             Sql.getInstance().disconnect();
             getLogger().info("Успешно отключился от базы данных");
         }
-        catch (SQLException e1) {
-            e1.printStackTrace();
+        catch (Exception e) {
+            e.printStackTrace();
         }
         getLogger().info("Успешно выключен.");
     }
 
     public ConfigManager getConfigManager() {
-        return config;
+        return this.config;
     }
 
     public WhiteListManager getWhiteListManager() {
@@ -82,8 +82,6 @@ public class WhiteLister extends JavaPlugin {
 
         try {
             Sql.initSql();
-
-            Sql.getInstance().createNewDatabaseWhiteList();
         }
         catch (SQLException throwable) {
             throwable.printStackTrace();

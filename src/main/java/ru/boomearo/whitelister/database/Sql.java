@@ -10,17 +10,21 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.sqlite.JDBC;
 
 import ru.boomearo.whitelister.WhiteLister;
 import ru.boomearo.whitelister.database.sections.SectionWhiteList;
+import ru.boomearo.whitelister.utils.AdvThreadFactory;
 
 public class Sql {
 
+    private final ExecutorService executor;
     private final Connection connection;
-
-    private final Object lock = new Object();
 
     private static Sql instance = null;
     private static final String CON_STR = "jdbc:sqlite:[path]database.db";
@@ -39,11 +43,15 @@ public class Sql {
 
     private Sql() throws SQLException {
         DriverManager.registerDriver(new JDBC());
+        this.executor = Executors.newFixedThreadPool(1, new AdvThreadFactory("WhiteLister-SQL", 3));
+
         this.connection = DriverManager.getConnection(CON_STR.replace("[path]", WhiteLister.getInstance().getDataFolder() + File.separator));
+
+        createNewDatabaseWhiteList();
     }
 
-    public List<SectionWhiteList> getAllDataWhiteList() {
-        synchronized (this.lock) {
+    public Future<List<SectionWhiteList>> getAllDataWhiteList() {
+        return this.executor.submit(() -> {
             try (Statement statement = this.connection.createStatement()) {
                 List<SectionWhiteList> collections = new ArrayList<SectionWhiteList>();
                 ResultSet resSet = statement.executeQuery("SELECT id, name, isProtected, timeAdded, whoAdd FROM list");
@@ -56,31 +64,11 @@ public class Sql {
                 e.printStackTrace();
                 return Collections.emptyList();
             }
-        }
+        });
     }
-
-    public SectionWhiteList getDataWhiteList(String name) {
-        synchronized (this.lock) {
-            try (PreparedStatement statement = this.connection.prepareStatement("SELECT id, isProtected, timeAdded, whoAdd FROM list WHERE name = ? LIMIT 1")) {
-                statement.setString(1, name);
-
-                ResultSet resSet = statement.executeQuery();
-
-                if (resSet.next()) {
-                    return new SectionWhiteList(resSet.getInt("id"), name, resSet.getBoolean("isProtected"), resSet.getLong("timeAdded"), resSet.getString("whoAdd"));
-                }
-                return null;
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-    }
-
 
     public void putWhiteList(String name, boolean isProtected, Long timeAdded, String whoAdd) {
-        synchronized (this.lock) {
+        this.executor.execute(() -> {
             try (PreparedStatement statement = this.connection.prepareStatement(
                     "INSERT INTO list(`name`, `isProtected`, `timeAdded`, `whoAdd`) " +
                             "VALUES(?, ?, ?, ?)")) {
@@ -93,11 +81,11 @@ public class Sql {
             catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
+        });
     }
 
     public void removeWhiteList(String name) {
-        synchronized (this.lock) {
+        this.executor.execute(() -> {
             try (PreparedStatement statement = this.connection.prepareStatement("DELETE FROM list WHERE name = ?")) {
                 statement.setString(1, name);
 
@@ -106,11 +94,11 @@ public class Sql {
             catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
+        });
     }
 
     public void updateWhiteList(String name, boolean isProtected, Long timeAdded, String whoAdd) {
-        synchronized (this.lock) {
+        this.executor.execute(() -> {
             String sql = "UPDATE list SET isProtected = ? , "
                     + "timeAdded = ? , "
                     + "whoAdd = ? "
@@ -127,32 +115,30 @@ public class Sql {
             catch (SQLException e) {
                 e.printStackTrace();
             }
+        });
+    }
+
+    private void createNewDatabaseWhiteList() {
+        String sql = "CREATE TABLE IF NOT EXISTS list (\n"
+                + "	id integer PRIMARY KEY,\n"
+                + "	name text NOT NULL,\n"
+                + "	isProtected boolean NOT NULL,\n"
+                + "	timeAdded long NOT NULL,\n"
+                + "	whoAdd text NOT NULL\n"
+                + ");";
+
+        try (Statement stmt = this.connection.createStatement()) {
+            stmt.execute(sql);
+            WhiteLister.getInstance().getLogger().info("Таблица белого списка успешно загружена.");
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
-    public void createNewDatabaseWhiteList() {
-        synchronized (this.lock) {
-            String sql = "CREATE TABLE IF NOT EXISTS list (\n"
-                    + "	id integer PRIMARY KEY,\n"
-                    + "	name text NOT NULL,\n"
-                    + "	isProtected boolean NOT NULL,\n"
-                    + "	timeAdded long NOT NULL,\n"
-                    + "	whoAdd text NOT NULL\n"
-                    + ");";
-
-            try (Statement stmt = this.connection.createStatement()) {
-                stmt.execute(sql);
-                WhiteLister.getInstance().getLogger().info("Таблица белого списка успешно загружена.");
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void disconnect() throws SQLException {
-        synchronized (this.lock) {
-            this.connection.close();
-        }
+    public void disconnect() throws SQLException, InterruptedException {
+        this.executor.shutdown();
+        this.executor.awaitTermination(15, TimeUnit.SECONDS);
+        this.connection.close();
     }
 }
