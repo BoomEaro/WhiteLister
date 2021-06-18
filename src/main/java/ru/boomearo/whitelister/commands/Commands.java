@@ -144,7 +144,7 @@ public class Commands implements CommandExecutor, TabCompleter {
             if (args[0].equalsIgnoreCase("add")) {
                 WhiteListManager manager = WhiteLister.getInstance().getWhiteListManager();
                 WhiteListedPlayer wlp = manager.getWhiteListedPlayer(args[1]);
-                if (wlp == null) {
+                if (wlp != null) {
                     sender.sendMessage(WhiteLister.getInstance().getConfigManager().getAddFailedPlayerIs().replace("%PLAYER%", args[1]));
                     return true;
                 }
