@@ -25,6 +25,8 @@ import ru.boomearo.whitelister.utils.DateUtil;
 
 public class Commands implements CommandExecutor, TabCompleter {
 
+    private static final List<String> empty = new ArrayList<>();
+
     public boolean onCommand(CommandSender sender, Command wl, String label, String[] args) {
         if (sender instanceof Player) {
             Player pl = (Player) sender;
@@ -34,23 +36,18 @@ public class Commands implements CommandExecutor, TabCompleter {
             }
         }
         if (args.length == 0) {
+            sender.sendMessage("/wl add <ник> - Добавить в белый список указанного игрока.");
+            sender.sendMessage("/wl remove <ник> - Удалить из белого списка указанного игрока.");
+            sender.sendMessage("/wl list <страница> - Просмотр всех добавленных игроков.");
+            sender.sendMessage("/wl info - Просмотр информации о добавленном игроке.");
+
             if (sender instanceof ConsoleCommandSender) {
-                sender.sendMessage("/wl add <ник> - Добавить в белый список указанного игрока");
-                sender.sendMessage("/wl remove <ник> - Удалить из белого списка указанного игрока");
-                sender.sendMessage("/wl toggleprotected <ник> - Переключить режим админа указанному игроку");
-                sender.sendMessage("/wl status - Просмотр статуса");
-                sender.sendMessage("/wl list - Просмотр всех добавленных");
-                sender.sendMessage("/wl info - Просмотр информации о добавленном игроке");
-                sender.sendMessage("/wl on - Включить белый список");
-                sender.sendMessage("/wl off - Выключить белый список");
-                sender.sendMessage("/wl onlyadm - Включить админ белый список");
-                sender.sendMessage("/wl reload - Перезагрузить конфиг");
-            }
-            else {
-                sender.sendMessage("/wl add <ник> - Добавить в белый список");
-                sender.sendMessage("/wl remove <ник> - Удалить из белого списка");
-                sender.sendMessage("/wl list <страница> - Просмотр всех добавленных");
-                sender.sendMessage("/wl info - Просмотр информации о добавленном игроке");
+                sender.sendMessage("/wl toggleprotected <ник> - Переключить режим админа указанному игроку.");
+                sender.sendMessage("/wl status - Просмотр статуса белого списка.");
+                sender.sendMessage("/wl on - Включить белый список.");
+                sender.sendMessage("/wl off - Выключить белый список.");
+                sender.sendMessage("/wl onlyadm - Переключить режим 'только для админ'.");
+                sender.sendMessage("/wl reload - Перезагрузить конфиг.");
             }
         }
         else if (args.length == 1) {
@@ -255,17 +252,21 @@ public class Commands implements CommandExecutor, TabCompleter {
 
             TreeSet<WhiteListedPlayer> sort = new TreeSet<WhiteListedPlayer>(WhiteLister.getInstance().getWhiteListManager().getAllWhiteListedPlayer());
 
+            if (sort.isEmpty()) {
+                sender.sendMessage("Не найдено игроков в белом списке!");
+                return;
+            }
+
             List<String> data = new ArrayList<String>();
             for (WhiteListedPlayer wlp : sort) {
                 boolean hasOnline = (WhiteLister.getRightPlayer(wlp.getName()) != null);
 
                 data.add((wlp.isProtected() ? "§c" : "§f") + wlp.getName() + (hasOnline ? " §a(онлайн)" : ""));
             }
+
             WhiteLister.sendPageInfo(sender, data, page, 12);
         });
     }
-
-    private static final List<String> empty = new ArrayList<>();
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String cmdString, String[] args) {
