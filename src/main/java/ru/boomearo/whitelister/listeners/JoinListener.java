@@ -37,7 +37,7 @@ public class JoinListener implements Listener {
             }
 
             if (config.isEnabledProtection()) {
-                if (!wlp.isProtected()) {
+                if (!wlp.isProtect()) {
                     e.disallow(Result.KICK_WHITELIST, config.getServerPermsOnlyProtected());
                     e.setLoginResult(Result.KICK_WHITELIST);
 
@@ -53,18 +53,25 @@ public class JoinListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerLoginEvent(PlayerLoginEvent e) {
-        String testRealIp = e.getRealAddress().getHostAddress();
-        String realIp = WhiteLister.getInstance().getConfigManager().getRealIp();
-        if (realIp != null) {
-            if (testRealIp.equals(realIp)) {
-                return;
-            }
-
-            e.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, WhiteLister.getInstance().getConfigManager().getServerPerms());
-            e.setResult(PlayerLoginEvent.Result.KICK_WHITELIST);
-
-            WhiteLister.getInstance().getLogger().warning("Попытка игрока " + e.getPlayer().getName() + " зайти в обход! Фейковй ип: " + e.getAddress().getHostAddress() + ". Настоящий ип адрес: " + testRealIp);
+        ConfigManager config = WhiteLister.getInstance().getConfigManager();
+        if (!config.isEnabledProtectIpSpoofing()) {
+            return;
         }
+
+        String testRealIp = e.getRealAddress().getHostAddress();
+        String realIp = config.getRealIp();
+        if (realIp == null) {
+            return;
+        }
+
+        if (testRealIp.equals(realIp)) {
+            return;
+        }
+
+        e.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, config.getServerPerms());
+        e.setResult(PlayerLoginEvent.Result.KICK_WHITELIST);
+
+        WhiteLister.getInstance().getLogger().warning("Попытка игрока " + e.getPlayer().getName() + " зайти в обход! Фейковй ип: " + e.getAddress().getHostAddress() + ". Настоящий ип адрес: " + testRealIp);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

@@ -1,6 +1,8 @@
 enabled: true
 enableOnlyProtectedJoin: false
-realIp: 127.0.0.1
+protectIpSpoofing:
+  enabled: true
+  realIp: 127.0.0.1
 messages:
   onjoinmsg: '&8[&b!!!&8]: &fИгрок &b%PLAYER% &fпытался зайти на сервер..'
   addpl: '&8[&b@&8]: &fИгрок &b%PLAYER% &fбыл успешно добавлен в белый список.'

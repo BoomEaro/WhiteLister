@@ -7,6 +7,7 @@ public final class ConfigManager {
 
     private boolean enabled = true;
     private boolean enabledProtection = false;
+    private boolean enabledProtectIpSpoofing = false;
     private String realIp = "127.0.0.1";
 
     private String onJoinMsg = "";
@@ -33,7 +34,9 @@ public final class ConfigManager {
         FileConfiguration fc = wl.getConfig();
         this.enabled = fc.getBoolean("enabled");
         this.enabledProtection = fc.getBoolean("enableOnlyProtectedJoin");
-        this.realIp = fc.getString("realIp");
+
+        this.enabledProtectIpSpoofing = fc.getBoolean("protectIpSpoofing.enabled");
+        this.realIp = fc.getString("protectIpSpoofing.realIp");
 
         this.onJoinMsg = fc.getString("messages.onjoinmsg").replace("&", "§");
         this.addPl = fc.getString("messages.addpl").replace("&", "§");
@@ -60,7 +63,9 @@ public final class ConfigManager {
 
         fc.set("enabled", this.enabled);
         fc.set("enableOnlyProtectedJoin", this.enabledProtection);
-        fc.set("realIp", this.realIp);
+
+        fc.set("protectIpSpoofing.enabled", this.enabledProtectIpSpoofing);
+        fc.set("protectIpSpoofing.realIp", this.realIp);
 
         wl.saveConfig();
     }
@@ -71,6 +76,10 @@ public final class ConfigManager {
 
     public boolean isEnabledProtection() {
         return this.enabledProtection;
+    }
+
+    public boolean isEnabledProtectIpSpoofing() {
+        return this.enabledProtectIpSpoofing;
     }
 
     public String getRealIp() {

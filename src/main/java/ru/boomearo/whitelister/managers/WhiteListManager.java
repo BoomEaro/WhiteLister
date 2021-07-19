@@ -89,7 +89,7 @@ public final class WhiteListManager {
         for (Player player : Bukkit.getOnlinePlayers()) {
             WhiteListedPlayer wlp = getWhiteListedPlayer(player.getName());
             if (wlp != null) {
-                if (!wlp.isProtected()) {
+                if (!wlp.isProtect()) {
                     player.kickPlayer("§c#Вылет: Вы были кикнуты с тестового сервера, потому что был активирован режим 'только админы'.");
                     if (!isKickMsg) {
                         isKickMsg = true;

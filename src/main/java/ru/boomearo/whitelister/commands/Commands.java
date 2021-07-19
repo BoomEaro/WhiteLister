@@ -164,7 +164,7 @@ public class Commands implements CommandExecutor, TabCompleter {
                     return true;
                 }
 
-                if (wlp.isProtected()) {
+                if (wlp.isProtect()) {
                     if (sender instanceof Player) {
                         Player pl = (Player) sender;
                         sender.sendMessage(WhiteLister.getInstance().getConfigManager().getRemoveFailedByProtect());
@@ -207,11 +207,11 @@ public class Commands implements CommandExecutor, TabCompleter {
                     return true;
                 }
 
-                wlp.setProtected(!wlp.isProtected());
+                wlp.setProtect(!wlp.isProtect());
 
-                Sql.getInstance().updateWhiteList(wlp.getName(), wlp.isProtected(), wlp.getTimeAdded(), wlp.getWhoAdd());
+                Sql.getInstance().updateWhiteList(wlp.getName(), wlp.isProtect(), wlp.getTimeAdded(), wlp.getWhoAdd());
 
-                sender.sendMessage("Игроку " + args[1] + " успешно " + (wlp.isProtected() ? "Включена" : "Выключена") + " админ защита!");
+                sender.sendMessage("Игроку " + args[1] + " успешно " + (wlp.isProtect() ? "Включена" : "Выключена") + " админ защита!");
             }
             else if (args[0].equalsIgnoreCase("info")) {
                 WhiteListManager manager = WhiteLister.getInstance().getWhiteListManager();
@@ -222,7 +222,7 @@ public class Commands implements CommandExecutor, TabCompleter {
                 }
 
                 sender.sendMessage("Ник: " + wlp.getName());
-                sender.sendMessage("Защита: " + wlp.isProtected());
+                sender.sendMessage("Защита: " + wlp.isProtect());
                 Date date = new Date(wlp.getTimeAdded());
                 SimpleDateFormat jdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                 String java_date = jdf.format(date);
@@ -261,7 +261,7 @@ public class Commands implements CommandExecutor, TabCompleter {
             for (WhiteListedPlayer wlp : sort) {
                 boolean hasOnline = (WhiteLister.getRightPlayer(wlp.getName()) != null);
 
-                data.add((wlp.isProtected() ? "§c" : "§f") + wlp.getName() + (hasOnline ? " §a(онлайн)" : ""));
+                data.add((wlp.isProtect() ? "§c" : "§f") + wlp.getName() + (hasOnline ? " §a(онлайн)" : ""));
             }
 
             WhiteLister.sendPageInfo(sender, data, page, 12);
@@ -319,7 +319,7 @@ public class Commands implements CommandExecutor, TabCompleter {
                 String search = args[1].toLowerCase();
 
                 for (WhiteListedPlayer wlp : WhiteLister.getInstance().getWhiteListManager().getAllWhiteListedPlayer()) {
-                    if (wlp.isProtected()) {
+                    if (wlp.isProtect()) {
                         if (wlp.getName().toLowerCase().startsWith(search)) {
                             matches.add(wlp.getName());
                         }
