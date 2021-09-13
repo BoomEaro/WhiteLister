@@ -92,9 +92,9 @@ public class WhiteLister extends JavaPlugin {
         return instance;
     }
 
-    public static void broadcastPlayers(String text) {
+    public static void broadcastPlayers(String message) {
         for (Player pl : Bukkit.getOnlinePlayers()) {
-            pl.sendMessage(text);
+            pl.sendMessage(message);
         }
     }
 

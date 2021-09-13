@@ -1,11 +1,11 @@
 name: WhiteLister
 main: ru.boomearo.whitelister.WhiteLister
-version: 0.5.2
+version: 0.6.1
 author: BoomEaro
 api-version: 1.13
-description: Whitelist fixer
+description: WhiteList system for offline mode servers
 commands:
   whitelister:
-    aliases: [wl]
-    usage: /wl add/remove/list
-    description: add/remove player
+    aliases: [whitelist, wl]
+    usage: /whitelister add|remove|list
+    description: Main command

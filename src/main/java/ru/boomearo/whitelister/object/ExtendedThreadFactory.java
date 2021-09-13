@@ -1,9 +1,10 @@
-package ru.boomearo.whitelister.utils;
+package ru.boomearo.whitelister.object;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class AdvThreadFactory implements ThreadFactory {
+//По сути точно такая же реализация фабрики как по умолчанию, однако здесь принимаются больше параметров
+public class ExtendedThreadFactory implements ThreadFactory {
 
     private static final AtomicInteger poolNumber = new AtomicInteger(1);
     private final ThreadGroup group;
@@ -13,7 +14,7 @@ public class AdvThreadFactory implements ThreadFactory {
     private final String factoryName;
     private final int priority;
 
-    public AdvThreadFactory(String factoryName, int priority) {
+    public ExtendedThreadFactory(String factoryName, int priority) {
         this.factoryName = factoryName;
         this.priority = priority;
 

@@ -14,8 +14,8 @@ import ru.boomearo.whitelister.object.WhiteListedPlayer;
 
 public final class WhiteListManager {
 
-    private final ConcurrentMap<String, Long> joinMessageCd = new ConcurrentHashMap<String, Long>();
-    private final ConcurrentMap<String, WhiteListedPlayer> whiteList = new ConcurrentHashMap<String, WhiteListedPlayer>();
+    private final ConcurrentMap<String, Long> joinMessageCd = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, WhiteListedPlayer> whiteList = new ConcurrentHashMap<>();
 
     public static final String prefix = "§8[§b!!!§8]:§f ";
 

@@ -19,7 +19,7 @@ import org.sqlite.JDBC;
 
 import ru.boomearo.whitelister.WhiteLister;
 import ru.boomearo.whitelister.database.sections.SectionWhiteList;
-import ru.boomearo.whitelister.utils.AdvThreadFactory;
+import ru.boomearo.whitelister.object.ExtendedThreadFactory;
 
 public class Sql {
 
@@ -43,7 +43,7 @@ public class Sql {
 
     private Sql() throws SQLException {
         DriverManager.registerDriver(new JDBC());
-        this.executor = Executors.newFixedThreadPool(1, new AdvThreadFactory("WhiteLister-SQL", 3));
+        this.executor = Executors.newFixedThreadPool(1, new ExtendedThreadFactory("WhiteLister-SQL", 3));
 
         this.connection = DriverManager.getConnection(CON_STR.replace("[path]", WhiteLister.getInstance().getDataFolder() + File.separator));
 
