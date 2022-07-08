@@ -15,11 +15,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.sqlite.JDBC;
 
 import ru.boomearo.whitelister.WhiteLister;
 import ru.boomearo.whitelister.database.sections.SectionWhiteList;
-import ru.boomearo.whitelister.object.ExtendedThreadFactory;
 
 public class Sql {
 
@@ -43,7 +43,10 @@ public class Sql {
 
     private Sql() throws SQLException {
         DriverManager.registerDriver(new JDBC());
-        this.executor = Executors.newFixedThreadPool(1, new ExtendedThreadFactory("WhiteLister-SQL", 3));
+        this.executor = Executors.newFixedThreadPool(1, new ThreadFactoryBuilder()
+                .setPriority(3)
+                .setNameFormat("WhiteLister-SQL-%d")
+                .build());
 
         this.connection = DriverManager.getConnection(CON_STR.replace("[path]", WhiteLister.getInstance().getDataFolder() + File.separator));
 
