@@ -1,7 +1,6 @@
 package ru.boomearo.whitelister;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -13,12 +12,11 @@ import ru.boomearo.whitelister.managers.WhiteListManager;
 
 import java.io.File;
 import java.sql.SQLException;
-import java.util.List;
 
 public class WhiteLister extends JavaPlugin {
 
-    private ConfigManager config = null;
-    private WhiteListManager manager = null;
+    private ConfigManager configManager = null;
+    private WhiteListManager whiteListManager = null;
 
     private static WhiteLister instance = null;
 
@@ -32,24 +30,24 @@ public class WhiteLister extends JavaPlugin {
             saveDefaultConfig();
         }
 
-        if (this.config == null) {
-            this.config = new ConfigManager();
+        if (this.configManager == null) {
+            this.configManager = new ConfigManager();
 
-            this.config.loadConfig();
+            this.configManager.loadConfig();
         }
 
         loadDataBase();
 
-        if (this.manager == null) {
-            this.manager = new WhiteListManager();
+        if (this.whiteListManager == null) {
+            this.whiteListManager = new WhiteListManager(this.configManager);
 
-            this.manager.loadWhiteList();
-            this.manager.checkWhiteListedPlayers();
+            this.whiteListManager.loadWhiteList();
+            this.whiteListManager.checkWhiteListedPlayers();
         }
 
-        getServer().getPluginManager().registerEvents(new JoinListener(), this);
+        getServer().getPluginManager().registerEvents(new JoinListener(this.whiteListManager, this.configManager), this);
 
-        getCommand("whitelister").setExecutor(new Commands());
+        getCommand("whitelister").setExecutor(new Commands(this.whiteListManager, this.configManager));
 
         getLogger().info("Успешно включен.");
     }
@@ -68,11 +66,11 @@ public class WhiteLister extends JavaPlugin {
     }
 
     public ConfigManager getConfigManager() {
-        return this.config;
+        return this.configManager;
     }
 
     public WhiteListManager getWhiteListManager() {
-        return this.manager;
+        return this.whiteListManager;
     }
 
     private void loadDataBase() {
@@ -96,41 +94,6 @@ public class WhiteLister extends JavaPlugin {
         for (Player pl : Bukkit.getOnlinePlayers()) {
             pl.sendMessage(message);
         }
-    }
-
-    public static Player getRightPlayer(String name) {
-        for (Player pl : Bukkit.getOnlinePlayers()) {
-            if (pl.getName().equals(name)) {
-                return pl;
-            }
-        }
-        return null;
-    }
-
-    public static void sendPageInfo(CommandSender cs, List<String> info, int page, int pageLimit) {
-        if (page <= 0) {
-            cs.sendMessage(WhiteListManager.prefix + "Указанная страница должна быть больше нуля.");
-            return;
-        }
-        int offSet = (page - 1) * pageLimit;
-        if (offSet >= info.size()) {
-            cs.sendMessage(WhiteListManager.prefix + "Указанная страница не найдена.");
-            return;
-        }
-
-        int maxPage = info.size() / pageLimit + (info.size() % pageLimit > 0 ? 1 : 0);
-
-        final String iii = WhiteListManager.prefix + "§8==========================";
-        cs.sendMessage(iii);
-        cs.sendMessage(WhiteListManager.prefix + "Страница: §b" + page + "§f/§b" + maxPage);
-        for (int i = 0; i < pageLimit; i++) {
-            int newO = offSet + i;
-            if (newO >= info.size()) {
-                break;
-            }
-            cs.sendMessage(WhiteListManager.prefix + "§b" + (newO + 1) + ". §f" + info.get(newO));
-        }
-        cs.sendMessage(iii);
     }
 
 }

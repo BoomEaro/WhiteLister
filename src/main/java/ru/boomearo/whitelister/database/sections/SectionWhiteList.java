@@ -1,11 +1,11 @@
 package ru.boomearo.whitelister.database.sections;
 
 public class SectionWhiteList {
-    public final int id;
-    public final String name;
-    public final boolean isProtected;
-    public final Long timeAdded;
-    public final String whoAdd;
+    private final int id;
+    private final String name;
+    private final boolean isProtected;
+    private final Long timeAdded;
+    private final String whoAdd;
 
     public SectionWhiteList(int id, String name, boolean isProtected, Long timeAdded, String whoAdd) {
         this.id = id;
@@ -13,5 +13,25 @@ public class SectionWhiteList {
         this.isProtected = isProtected;
         this.timeAdded = timeAdded;
         this.whoAdd = whoAdd;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public boolean isProtected() {
+        return this.isProtected;
+    }
+
+    public Long getTimeAdded() {
+        return this.timeAdded;
+    }
+
+    public String getWhoAdd() {
+        return this.whoAdd;
     }
 }

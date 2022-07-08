@@ -14,10 +14,16 @@ import ru.boomearo.whitelister.object.WhiteListedPlayer;
 
 public final class WhiteListManager {
 
+    private final ConfigManager configManager;
+
     private final ConcurrentMap<String, Long> joinMessageCd = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, WhiteListedPlayer> whiteList = new ConcurrentHashMap<>();
 
     public static final String prefix = "§8[§b!!!§8]:§f ";
+
+    public WhiteListManager(ConfigManager configManager) {
+        this.configManager = configManager;
+    }
 
     public boolean hasSentJoinMessage(String name, int time) {
         Long plTime = getJoinMessageCd(name);
@@ -36,7 +42,7 @@ public final class WhiteListManager {
     public void loadWhiteList() {
         try {
             for (SectionWhiteList spb : Sql.getInstance().getAllDataWhiteList().get()) {
-                addWhiteListedPlayer(new WhiteListedPlayer(spb.name, spb.isProtected, spb.timeAdded, spb.whoAdd));
+                addWhiteListedPlayer(new WhiteListedPlayer(spb.getName(), spb.isProtected(), spb.getTimeAdded(), spb.getWhoAdd()));
             }
         }
         catch (Exception e) {
@@ -57,9 +63,8 @@ public final class WhiteListManager {
     }
 
     public void checkWhiteListedPlayers() {
-        ConfigManager config = WhiteLister.getInstance().getConfigManager();
-        if (config.isEnabled()) {
-            if (config.isEnabledProtection()) {
+        if (this.configManager.isEnabled()) {
+            if (this.configManager.isEnabledProtection()) {
                 kickNonWhitelistPlayer();
                 kickNonSuperAdmins();
             }
